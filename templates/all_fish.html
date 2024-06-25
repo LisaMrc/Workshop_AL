@@ -4,53 +4,20 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
-        <title>Your Dives</title>
+        <title>Fish Database</title>
 	    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     
     <body>
-        <section class="content-section bg-light" id="dives">
+        <section class="content-section bg-light" id="fish">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5">
-                    <div class="content-section-heading">
-                        <h3 class="text-secondary mb-0">Welcome, username !</h3>
-                    </div>
-                    
                     <div class="col-lg-5 d-flex flex-column align-items-left mb-4">
                         <h2>Your Dives</h2>
                         <p class="mb-5">See here your previous dives</p>	 
                         <div id='abs' class=""></div>
                     </div>
-
-                    <div class="col-lg-5 d-flex flex-column align-items-center mb-4">
-                        <h2 class="mb-5">New Dive</h2>
-                        <input type='text' id='nom' class="mb-5 mx-auto"> <!-- Cette ligne est l'input du template -->
-                        
-                        <label for="dive_mins">Number of minutes you dived : </label>
-                        <input type='number' id='dive_mins' class="mb-5 mx-auto">
-
-                        <label for="dive_secs">Number of seconds you dived : </label>
-                        <input type='number' id='dive_secs' class="mb-5 mx-auto">
-
-                        <label for="dive_depth">Your dive depth : </label>
-                        <input type='number' id='dive_depth' class="mb-5 mx-auto">
-
-                        <label for="dive_date">Your dive date : </label>
-                        <input type='date' id='dive_date' class="mb-5 mx-auto">
-
-                        <label for="rating">Your rating </label>
-                        <input type='number' id='rating' class="mb-5 mx-auto">
-
-                        <button class="btn btn-primary btn-xl" onClick="create()">Add</button>
-                    </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="content-section bg-primary text-white">
-            <div class="container px-4 px-lg-5 text-center">
-                <h2 class="mb-4">Want to see all the fish in our database ?</h2>
-                <a class="btn btn-xl btn-light me-4" href="/form">See all fish</a>
             </div>
         </section>
     
@@ -103,7 +70,6 @@
       const data = await	response.json();
       display(data);
   }
-       
        
   //fonction d'affichage, utilisée partout
   function display(data) {
