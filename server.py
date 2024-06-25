@@ -52,7 +52,7 @@ def add_record():
     connection.close()
     return "SUCCESS"
 
-@app.route('/your_table/<int:id>')
+@app.route('/your_table/<int:id>', methods=['PUT'])
 def update_record(id):
     data = request.get_json()
     new_name = data.get('name')
@@ -64,5 +64,20 @@ def update_record(id):
     return jsonify({'message': 'Record updated successfully'})
 
 @app.route("/")
-def index():
+def userDives():
     return render_template('userDives.html')
+<<<<<<< HEAD
+=======
+
+@app.route("/lp")
+def landingPage():
+    return render_template('landingPage.html')
+
+@app.route("/login")
+def login():
+    return render_template('login.html')
+
+@app.route("/signin")
+def signin():
+    return render_template('signin.html')
+>>>>>>> origin/Lisa

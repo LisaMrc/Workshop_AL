@@ -1,1 +1,6 @@
-/_pycache_
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore the __pycache__ directory
+__pycache__/
