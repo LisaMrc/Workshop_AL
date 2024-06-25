@@ -52,6 +52,11 @@ def add_record():
     connection.close()
     return "SUCCESS"
 
+@app.route("/delete/<index>", methods=['GET', 'POST'])
+def delete_game(index):
+    dives.pop(int(index))
+    return "SUCCESS"
+
 @app.route('/your_table/<int:id>', methods=['PUT'])
 def update_record(id):
     data = request.get_json()
