@@ -12,7 +12,7 @@ absences={}
 
 @app.route("/")
 def index():
-    return render_template('serveurAbsences.html')
+    return render_template('userDives.html')
 
 @app.route("/absences", methods=['GET', 'POST'])
 def general():
