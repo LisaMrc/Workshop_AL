@@ -23,7 +23,7 @@
                     </div>
                         <div class="col-lg-5 d-flex flex-column mb-4">
                             <h2 class="mb-5">New Dive</h2>
-                            <form action="add" method="POST"></form>
+                            <form action="/add" method="POST">
                                 <input type='text' id='nom' class="mb-5"> <!-- Cette ligne est l'input du template -->
                                 
                                 <label for="dive_mins">Number of minutes you dived :</label>
@@ -41,7 +41,7 @@
                                 <label for="rating">Your rating :</label>
                                 <input type='number' name="rating" id='rating' class="mb-5">
 
-                                <button class="btn btn-primary btn-xl" onClick="create()">Add</button>
+                                <input type="submit" value="Submit">
                             </form>
                         </div>
                     </div>
