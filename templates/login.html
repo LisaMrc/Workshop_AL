@@ -4,15 +4,26 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login Page</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
-        <div class="col-lg-5 d-flex flex-column align-items-left mb-4">
-            <h2>Login</h2>
-            <form action="login" method="post">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <input type="submit" value="Login">
-            </form>
-        </div>
+        <!-- Problème de champs : à côté au lieu de en-dessous -->
+        <section class="content-section" id="portfolio">
+            <div class="container px-4 px-lg-5">
+                <div class="content-section-heading text-center">
+                    <h2 class="mb-5">Welcome back!</h2>
+                    <h3 class="text-secondary mb-0">Log into your account</h3>
+                </div>
+                <div class="row gx-0">
+                    <div class="col-lg-6">
+                        <form action="login" method="post">
+                            <input type="text" name="username" placeholder="Username" required>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <input type="submit" value="Login">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
     </body>
 </html>

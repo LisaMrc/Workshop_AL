@@ -52,7 +52,7 @@ def add_record():
     connection.close()
     return "SUCCESS"
 
-@app.route('/your_table/<int:id>')
+@app.route('/your_table/<int:id>', methods=['PUT'])
 def update_record(id):
     data = request.get_json()
     new_name = data.get('name')
@@ -64,39 +64,17 @@ def update_record(id):
     return jsonify({'message': 'Record updated successfully'})
 
 @app.route("/")
-def index():
+def userDives():
     return render_template('userDives.html')
 
-@app.route("/absences", methods=['GET', 'POST'])
-def general():
-    if request.method == 'POST':
-        nom = request.json['nom']
-        # On vérifie d'abord si ce n'est pas déjà présent
-        for eleve in absences.values():
-        	if eleve['nom'] == nom:
-        	    return jsonify(absences),409
-        # OK on ajoute
-        global cpt
-        cpt=cpt+1 
-        absences[cpt]={'nom':nom, 'abs':1} 
-    return jsonify(absences), 201;
+@app.route("/lp")
+def landingPage():
+    return render_template('landingPage.html')
 
-@app.route("/absence/<int:id>", methods=[ 'PUT', 'DELETE'])
-def abs(id):
-    if request.method == 'PUT':
-        if id in absences:
-            absences[id]['abs']=absences[id]['abs']+1
-        else:
-            abort(404)
-    else:
-        if id in absences:
-            absences[id]['abs']=absences[id]['abs']-1
-            if absences[id]['abs'] == 0:
-                del(absences[id])
-        else:
-            abort(404)
-    	# et au final on retourne tout le json    
-    return jsonify(absences);
+@app.route("/login")
+def login():
+    return render_template('login.html')
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+@app.route("/signin")
+def signin():
+    return render_template('signin.html')
