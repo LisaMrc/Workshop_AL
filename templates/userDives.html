@@ -21,38 +21,37 @@
                         <p class="mb-5">See here your previous dives</p>	 
                         <div id='abs' class=""></div>
                     </div>
-
-                    <form action="add" method="POST">
-                        <div class="col-lg-5 d-flex flex-column align-items-center mb-4">
+                        <div class="col-lg-5 d-flex flex-column mb-4">
                             <h2 class="mb-5">New Dive</h2>
-                            <input type='text' id='nom' class="mb-5 mx-auto"> <!-- Cette ligne est l'input du template -->
-                            
-                            <label for="dive_mins">Number of minutes you dived : </label>
-                            <input type='number' name="dive_mins" id='dive_mins' class="mb-5 mx-auto">
+                            <form action="add" method="POST"></form>
+                                <input type='text' id='nom' class="mb-5"> <!-- Cette ligne est l'input du template -->
+                                
+                                <label for="dive_mins">Number of minutes you dived :</label>
+                                <input type='number' name="dive_mins" id='dive_mins' class="mb-5">
 
-                            <label for="dive_secs">Number of seconds you dived : </label>
-                            <input type='number' name="dive_secs" id='dive_secs' class="mb-5 mx-auto">
+                                <label for="dive_secs">Number of seconds you dived :</label>
+                                <input type='number' name="dive_secs" id='dive_secs' class="mb-5">
 
-                            <label for="dive_depth">Your dive depth : </label>
-                            <input type='number' name="dive_depth" id='dive_depth' class="mb-5 mx-auto">
+                                <label for="dive_depth">Your dive depth :</label>
+                                <input type='number' name="dive_depth" id='dive_depth' class="mb-5">
 
-                            <label for="dive_date">Your dive date : </label>
-                            <input type='date' name="dive_date" id='dive_date' class="mb-5 mx-auto">
+                                <label for="dive_date">Your dive date :</label>
+                                <input type='date' name="dive_date" id='dive_date' class="mb-5">
 
-                            <label for="rating">Your rating </label>
-                            <input type='number' name="rating" id='rating' class="mb-5 mx-auto">
+                                <label for="rating">Your rating :</label>
+                                <input type='number' name="rating" id='rating' class="mb-5">
 
-                            <button class="btn btn-primary btn-xl" onClick="create()">Add</button>
+                                <button class="btn btn-primary btn-xl" onClick="create()">Add</button>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
         </section>
 
         <section class="content-section bg-primary text-white">
             <div class="container px-4 px-lg-5 text-center">
-                <h2 class="mb-4">Want to see all the fish in our database ?</h2>
-                <a class="btn btn-xl btn-light me-4" href="/form">See all fish</a>
+                <h2 class="mb-4">Want to see all the fishes in our database ?</h2>
+                <a class="btn btn-xl btn-light me-4" href="/form">See all fishes</a>
             </div>
         </section>
     
