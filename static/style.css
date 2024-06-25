@@ -1,0 +1,16 @@
+#logsbox {
+    color: blue;
+    padding: 0 15px;
+    border: solid blue 1px;
+    margin-left: 50%;
+    position: absolute;
+    top: 10px;
+}
+
+#logs {
+    style='font-size: 10px;
+}
+
+#logo {
+    width: 30px;
+}

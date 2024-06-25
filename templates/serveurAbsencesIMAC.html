@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Serveur absences</title>
+  </head>
+  <body>
+    <h1>Serveur absences</h1>
+    <p>Ecrit en Flask : la ressource <i>absences</i> renvoie un json.</p>
+    <p> GET /absences  (toutes les absences)<br>
+        POST /absences (crée une nouvelle absence, envoi d'un json {'nom': xxxxx})<br>
+        PUT /absence/<i>id</i> (incrémente les abscences de id, pas de body)<br>
+        DELETE /absence/<i>id</i> (décrémente les abscences de id, pas de body)<br>
+        <i>Nota : tous ces endpoints renvoient la liste resultante des absences recensées.</i>
+    </p>
+
+    <h3>Exercice</h3>
+    <ul>
+      <li>Ecrire la fonction js qui va afficher la liste des absences dés le démarrage de
+        la page (utilisez la div abs) (affichez juste le nom pour le moment)
+      </li>
+      <li>Remarquez que le bouton d'ajout est déjà configuré pour appeler une fonction create().
+        Créez cette fonction qui va demander à créer une nouvelle absence.
+      </li>
+      <li>Créez une fonction display qui se charge de l'affihage des absents. Cette fonction 
+        sera utilisé par le GET d'origine, et par le POST que vous venez de faire.
+      </li>
+      <li>Si ce n'est déjà fait, améliorez cette fonction display afin qu'elle propose l'ajout
+        d'une absence à l'étudiant déjà recensé, ou une justification d'absence.
+      </li>
+      <li>Créez les fonctions js qui ajoute l'absence, ou la justifie, afin que les boutons
+        fonctionnent.
+      </li>
+    </ul>
+
+    <input type='text' id='nom'><button onClick="create()">Nouvel étudiant absent</button>
+    <h3>Liste des absences</h3>	 
+    <div id='abs'>
+    </div>
+    <div style="color: blue; padding: 0 15px; border: solid blue 1px; margin-left: 50%; position: absolute; top: 10px;">
+		<h3 >logs</h3>
+		<div id='logs' style='font-size: 10px;'> </div>
+    </div>
+   
+   <script>
+      "use strict";
+      
+      //Au chargement on affiche la liste des absences
+  	
+	    //creation d'un nouvel étudiant absentéiste
+	
+      //ajout d'une absence à un existant
+     	
+     	//Absence justifiée
+       	
+     	
+     	//fonction d'affichage, utilisée partout, car tous les endpoints renvoient la meme chose
+  
+     	//fonction d'affichage de logs, c'est de votre coté que vous ajoutez tout ça
+     </script>
+
+  </body>
+</html>

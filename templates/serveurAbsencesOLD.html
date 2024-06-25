@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Serveur absences</title>
+  </head>
+  <body>
+    <h1>Serveur absences</h1>
+    <p>Ecrit en Flask : la ressource <i>absences</i> renvoie un json.</p> 
+
+    <input type='text' id='nom'><button onClick="create()">Nouvel étudiant absent</button>
+    <h3>Liste des absences</h3>	 
+    <div id='abs'>
+    </div>
+    <div style="color: blue; padding: 0 15px; border: solid blue 1px; margin-left: 50%; position: absolute; top: 10px;">
+		<h3 >logs</h3>
+		<div id='logs' style='font-size: 10px;'> </div>
+    </div>
+   
+   <script>
+      "use strict";
+      
+      //Au chargement on affiche la liste des absences
+      document.addEventListener('DOMContentLoaded', function() {
+	 fetch("/absences") 
+	    .then( response => {
+	    	register('GET : Liste de tous les absences', response.status);
+	    	response.json().then( data => {
+	    		display(data); //Display est une fonction que j'ai
+							   // créée pour mes besoins propres
+ 	    	});
+	    })
+	    .catch( error => { 
+		    console.log(error);
+	    } );
+      });
+	
+
+	//creation d'un nouvel étudiant absentéiste
+	function create() {
+	   const neo = document.getElementById('nom');
+		fetch("/absences",
+			{ method: 'POST',
+			  headers: {'Accept': 'application/json, text/plain, */*',
+    				    'Content-Type': 'application/json'
+  			  },
+			  body: JSON.stringify({'nom':neo.value})
+			}) 
+		.then( response => {
+    	    register(`POST : Création du nom ${neo.value}`, response.status);
+    	    neo.value='';
+			response.json().then( data => {
+  	    	    display(data);
+ 			});
+		})
+		.catch( error => { 
+		    console.log(error);
+		});
+	}
+	
+      	//ajout d'une absence à un existant
+	function addAbs(id) {
+ 		fetch("/absence/"+id, { method: 'PUT'}) 
+		.then( response => {
+	    	register(`PUT sur ${id} Nouvelle absence`, response.status);
+			response.json().then( data => { display(data);	})
+		})
+		.catch( error => {
+			 console.log(error);
+		 } );
+    }
+     	
+     	//Absence justifiée
+    function delAbs(id) {
+ 		fetch("/absence/"+id, { method: 'DELETE'}) 
+		.then( response => {
+    	    register(`DELETE sur ${id} : Justification absence`, response.status);
+			response.json().then( data => { display(data); })
+		} )
+		.catch( error => { console.log(error); } );
+    }
+     	
+     	
+    //fonction d'affichage, utilisée partout
+    function display(data) {
+		const mylist = document.getElementById('abs');
+		//on la nettoie des contenus précédents
+		while(mylist.firstChild) { 
+               		mylist.removeChild(mylist.firstChild); 
+        	}
+ 		for(const [id, absent] of Object.entries(data)) {
+			const line = document.createElement("p");
+			const add = document.createElement("button");
+			add.innerHTML="Ajouter une absences";
+			add.onclick =  function() {
+				addAbs(id);
+			};
+			const del = document.createElement("button");
+			del.innerHTML="Justifier une absence";
+			del.onclick = function() {
+				delAbs(id);
+			};
+			const text = document.createElement("span");
+			text.innerHTML = id + ' : ' +absent.nom + ' : ' + absent.abs + ' absence(s)';
+			line.append(text);
+			line.append(add);
+			line.append(del);
+			mylist.append(line);
+		}
+	};
+
+     	//fonction d'affichage de logs
+     	function register(msg, code) {
+     		const today = new Date();
+			const mylogs = document.getElementById('logs');
+			const line = document.createElement("p");
+			if (code >=400 ) {
+				line.style.color = "red";
+			}
+			line.innerHTML = today.toLocaleTimeString() + ' -> <i>' +msg + '</i> HTTP : [' + code + ']';
+			mylogs.append(line);
+        }
+    </script>
+
+  </body>
+</html>
