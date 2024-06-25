@@ -66,8 +66,6 @@ def update_record(id):
 @app.route("/")
 def userDives():
     return render_template('userDives.html')
-<<<<<<< HEAD
-=======
 
 @app.route("/lp")
 def landingPage():
@@ -80,4 +78,3 @@ def login():
 @app.route("/signin")
 def signin():
     return render_template('signin.html')
->>>>>>> origin/Lisa
