@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from flask import Flask,request,render_template,jsonify,abort
+from flask import Flask,request,render_template,jsonify
 from flask_cors import CORS
+from db import get_mysql_connector_version, get_cursor
 
 app = Flask(__name__)
 CORS(app)
@@ -10,40 +11,58 @@ CORS(app)
 cpt=0
 absences={}
 
+@app.route("/sql_version")
+def sqlVersion():
+    version = get_mysql_connector_version()
+    return f"MySQL Connector version: {version}"
+
+@app.route('/viewDB', methods=['GET'])
+def get_data():
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT * FROM Dive")
+    rows = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return jsonify(rows)
+
+@app.route('/viewRecord/<int:id>', methods=['GET'])
+def get_record(id):
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT * FROM Dive WHERE id = %s", (id,))
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    if row:
+        return jsonify(row)
+    else:
+        return jsonify({'message': 'Record not found'}), 404
+
+@app.route('/add', methods=['POST'])
+def add_record():
+    dive_mins = request.form['dive_mins']
+    dive_secs = request.form['dive_secs']
+    dive_depth = request.form['dive_depth']
+    dive_date = request.form['dive_date']
+    rating = request.form['rating']
+    connection, cursor = get_cursor()
+    sql_query = "INSERT INTO Dive (dive_mins, dive_secs, dive_depth, dive_date, rating) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return "SUCCESS"
+
+@app.route('/your_table/<int:id>')
+def update_record(id):
+    data = request.get_json()
+    new_name = data.get('name')
+    connection, cursor = get_cursor()
+    cursor.execute("UPDATE your_table SET name = %s WHERE id = %s", (new_name, id))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return jsonify({'message': 'Record updated successfully'})
+
 @app.route("/")
 def index():
-    return render_template('serveurAbsences.html')
-
-@app.route("/absences", methods=['GET', 'POST'])
-def general():
-    if request.method == 'POST':
-        nom = request.json['nom']
-        # On vérifie d'abord si ce n'est pas déjà présent
-        for eleve in absences.values():
-        	if eleve['nom'] == nom:
-        	    return jsonify(absences),409
-        # OK on ajoute
-        global cpt
-        cpt=cpt+1 
-        absences[cpt]={'nom':nom, 'abs':1} 
-    return jsonify(absences), 201;
-
-@app.route("/absence/<int:id>", methods=[ 'PUT', 'DELETE'])
-def abs(id):
-    if request.method == 'PUT':
-        if id in absences:
-            absences[id]['abs']=absences[id]['abs']+1
-        else:
-            abort(404)
-    else:
-        if id in absences:
-            absences[id]['abs']=absences[id]['abs']-1
-            if absences[id]['abs'] == 0:
-                del(absences[id])
-        else:
-            abort(404)
-    	# et au final on retourne tout le json    
-    return jsonify(absences);
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    return render_template('userDives.html')
