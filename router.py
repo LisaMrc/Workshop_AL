@@ -52,27 +52,27 @@ def login():
 def signin():
     return render_template('signin.html')
 
-# @app.route('/add_user', methods=['POST'])
-# def add_user():
-#     dive_mins = request.form['dive_mins']
-#     dive_secs = request.form['dive_secs']
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    username = request.form['username']
+    password = request.form['password']
 
-#     connection, cursor = get_cursor()
+    connection, cursor = get_cursor()
 
-#     sql_query = "INSERT INTO Dive (dive_mins, dive_secs, dive_depth, dive_date, rating) VALUES (%s, %s, %s, %s, %s)"
-#     cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating))
-#     connection.commit()
-#     cursor.close()
-#     connection.close()
+    sql_query = "INSERT INTO diver (username, password) VALUES (%s, %s)"
+    cursor.execute(sql_query, (username, password))
+    connection.commit()
+    cursor.close()
+    connection.close()
 
-#     return "USER WAS ADDED SUCCESSFULLY"
+    return "USER WAS ADDED SUCCESSFULLY"
 
 @app.route("/dives")
 def user_dives_list():
     data = db.get_dives_data()
-    data_formated = jsonify(data)
-    print(data_formated)
-    return render_template('userDives.html', user_dives=data_formated)
+    # data_formated = jsonify(data)
+    # print(data_formated)
+    return render_template('userDives.html', user_dives=data)
 
 @app.route('/add', methods=['POST'])
 def add_dive():

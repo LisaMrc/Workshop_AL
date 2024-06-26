@@ -11110,13 +11110,3 @@ footer.footer .social-link:hover {
   font-size: 2.25rem;
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.1);
 }
-
-#logsbox
-{
-    color: rgb(255, 0, 0);
-    padding: 0 15px;
-    border: solid blue 1px;
-    margin-left: 50%;
-    position: absolute;
-    top: 10px;
-}
