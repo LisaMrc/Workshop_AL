@@ -12,11 +12,6 @@ def sqlVersion():
     version = get_mysql_connector_version()
     return f"MySQL Connector version: {version}"
 
-@app.route('/viewDB', methods=['GET'])
-def show_data():
-    data = db.get_dives_data()
-    return jsonify(data)
-
 @app.route('/viewRecord/<int:id>', methods=['GET'])
 def get_record(id):
     connection, cursor = get_cursor()
@@ -75,19 +70,43 @@ def add_user():
     password = request.form['password']
 
     connection, cursor = get_cursor()
-
-    sql_query = "INSERT INTO diver (username, password) VALUES (%s, %s)"
+    sql_query = "SELECT username FROM diver WHERE username = %s AND password = %s"
     cursor.execute(sql_query, (username, password))
-    connection.commit()
+    result = cursor.fetchone()
     cursor.close()
     connection.close()
 
-    return "USER WAS ADDED SUCCESSFULLY"
+    if result:
+        return "ALREADY IN DATABASE"
+    else:
+        username = request.form['username']
+        password = request.form['password']
+
+        connection, cursor = get_cursor()
+
+        sql_query = "INSERT INTO diver (username, password) VALUES (%s, %s)"
+        cursor.execute(sql_query, (username, password))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return "USER WAS ADDED SUCCESSFULLY"
 
 # @app.route("/dives")
 # def user_dives_list():
 #     data = db.get_dives_data()
 #     return render_template('userDives.html', user_dives=data)
+
+@app.route('/show_dives')
+def show_dives():
+    # connection, cursor = get_cursor()
+    # # cursor.execute("SELECT * FROM dive WHERE username = %s", (current_user.username,))
+    # user_dives = cursor.fetchall()
+    # cursor.close()
+    # connection.close()
+    data = db.get_dives_data()
+    
+    return render_template('userDives.html', user_dives=data)    
 
 @app.route('/add', methods=['POST'])
 def add_dive():
@@ -109,7 +128,7 @@ def add_dive():
     return render_template('userDives.html', user_dives=data)
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
-def delete_item(index):
+def delete_dive(index):
     connection, cursor = get_cursor()
     sql_query = "DELETE FROM dive WHERE id = %s"
     cursor.execute(sql_query, (index,))
@@ -119,15 +138,17 @@ def delete_item(index):
 
     data = db.get_dives_data()
 
-    return render_template('userDives.html', user_dives=data)    
+    return render_template('userDives.html', user_dives=data)
 
-@app.route('/show_dives')
-def show_dives():
+@app.route('/edit_dive')
+def edit_dive(index):
     # connection, cursor = get_cursor()
-    # # cursor.execute("SELECT * FROM dive WHERE username = %s", (current_user.username,))
-    # user_dives = cursor.fetchall()
+    # sql_query = "DELETE FROM dive WHERE id = %s"
+    # cursor.execute(sql_query, (index,))
+    # connection.commit()
     # cursor.close()
     # connection.close()
-    data = db.get_dives_data()
-    
-    return render_template('userDives.html', user_dives=data)    
+
+    # data = db.get_dives_data()
+
+    return render_template('userDivesEdit.html')  

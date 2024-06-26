@@ -18,52 +18,6 @@
                         <h3 class="text-secondary mb-0">Welcome, username !</h3>
                     </div>
                     
-                    <div class="col-lg-5 d-flex flex-column align-items-left mb-4">
-                        <h2>Your Dives</h2>
-                        <p class="mb-5">See here your previous dives</p>	 
-                        <table class="my_table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Time</th>
-                                    <th>Depth</th>
-                                    <th>Date</th>
-                                    <th>Rating</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for entry in user_dives %}
-                                    <tr>
-                                        <td class="my_td">Dive n°{{ loop.index }}</td> 
-                                        {% for user_dive in entry %}
-                                            {% if loop.index0 == 1 %}
-                                                <td class="my_td">{{user_dive}}:{{loop.nextitem}}</td>
-                                            {% elif loop.index0 == 3 %}
-                                                <td class="my_td">{{user_dive}} m</td>
-                                            {% elif loop.index0 == 5 %}
-                                                <td class="my_td">{{user_dive}}/5</td>
-                                            {% elif loop.index0 != 0 and loop.index0 != 2 %}
-                                                <td class="my_td">{{user_dive}}</td>
-                                            {% endif %}
-                                        {% endfor %}
-
-                                        <td class="my_td">
-                                            <a href="/edit_dive"></a>
-                                                <button class="btn btn-primary">Edit</button>
-                                            </a>
-                                        </td>
-                                        
-                                        <td class="my_td">
-                                            <a href="/delete_dive/{{ entry[0] }}">
-                                                <button class="caption btn-close btn-warning"></button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
                     <div class="col-lg-5 d-flex flex-column mb-4">
                         <h2 class="mb-5">New Dive</h2>
                         <form action="/add" method="POST">
@@ -102,5 +56,7 @@
                 <a class="btn btn-xl btn-light me-4" href="/form">See all fishes</a>
             </div>
         </section>
+
+
     </body>
 </html>
