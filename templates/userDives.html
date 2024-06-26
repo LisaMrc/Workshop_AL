@@ -24,20 +24,31 @@
                         <table class="my_table">
                             <thead>
                                 <th></th>
-                                <th>Temps</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-
+                                <th>Time</th>
+                                <th>Depth</th>
+                                <th>Date</th>
+                                <th>Rating</th>
                             </thead>
+                            <tbody>
                                 {% for entry in user_dives %}
                                 <tr>
                                     {% for user_dive in entry %}
-                                        <td class="my_td">{{user_dive}}</td>
+                                        {% if loop.index0 == 0 %}
+                                            <td class="my_td">Dive n°{{user_dive}}</td>
+                                        {% elif loop.index0 == 1 %}
+                                            <td class="my_td">{{user_dive}}:{{loop.nextitem}}</td>
+                                        {% elif loop.index0 == 3 %}
+                                            <td class="my_td">{{user_dive}} m</td>
+                                        {% elif loop.index0 == 5 %}
+                                            <td class="my_td">{{user_dive}}/5</td>
+                                        {% elif loop.index0 != 2 %}
+                                            <td class="my_td">{{user_dive}}</td>
+                                        {% endif %}
                                     {% endfor %}
                                     <td class="my_td"><button class="btn btn-dark"><a href="delete_dive">Delete</a></button></td>
                                 </tr>
                                 {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                     

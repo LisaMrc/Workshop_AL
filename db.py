@@ -18,7 +18,7 @@ def get_mysql_connector_version():
 
 def get_dives_data():
     connection, cursor = get_cursor()
-    cursor.execute("SELECT * FROM Dive")
+    cursor.execute("SELECT * FROM Dive ORDER BY id")
     rows = cursor.fetchall()
     cursor.close()
     connection.close()
