@@ -45,7 +45,18 @@
                                             <td class="my_td">{{user_dive}}</td>
                                         {% endif %}
                                     {% endfor %}
-                                    <td class="my_td"><button class="btn btn-dark"><a href="delete_dive">Delete</a></button></td>
+
+                                    <td class="my_td">
+                                        <a href="/edit_dive">
+                                            <button class="btn btn-primary">Edit</button>
+                                        </a>
+                                    </td>
+                                    
+                                    <td class="my_td">
+                                        <a href="/delete_dive/{{loop.index0}}">
+                                            <button class="caption btn-close btn-warning"></button>
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -70,7 +81,7 @@
                             <br><label for="rating">Your rating :</label>
                             <br><input type='number' name="rating" id='rating' class="mb-5">
 
-                            <input type="submit" value="Submit">
+                            <br><input class="btn btn-primary" type="submit" value="Ajouter">
                         </form>
                     </div>
 
@@ -81,7 +92,6 @@
         <section class="content-section bg-dark text-white">
             <div class="container px-4 px-lg-5 text-center">
                 <h2 class="mb-4">Here are your statistics</h2>
-                <a class="btn btn-xl btn-light me-4" href="/form">See all fishes</a>
             </div>
         </section>
 
