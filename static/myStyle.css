@@ -1,0 +1,12 @@
+.my_table
+{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.my_td 
+{
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
