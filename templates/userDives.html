@@ -28,14 +28,24 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
-
                             </thead>
                                 {% for entry in user_dives %}
                                 <tr>
                                     {% for user_dive in entry %}
                                         <td class="my_td">{{user_dive}}</td>
                                     {% endfor %}
-                                    <td class="my_td"><button class="btn btn-dark"><a href="delete_dive">Delete</a></button></td>
+
+                                    <td class="my_td">
+                                        <a href="/edit_dive">
+                                            <button class="btn btn-primary">Edit</button>
+                                        </a>
+                                    </td>
+                                    
+                                    <td class="my_td">
+                                        <a href="/delete_dive/{{loop.index0}}">
+                                            <button class="caption btn-close btn-warning"></button>
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                         </table>

@@ -107,15 +107,23 @@ def add_dive():
 
     return "DIVE WAS ADDED SUCCESSFULLY"
 
-# @app.route('/delete_dive/<int:dive_id>', methods=['DELETE'])
-# def delete_item(dive_id):
-#     dive = dive.query.get(dive_id)
-#     if dive:
-#         dive.session.delete(dive)
-#         dive.session.commit()
-#         return jsonify({'message': 'Dive deleted successfully'}), 200
-#     else:
-#         return jsonify({'message': 'Dive not found'}), 404
+@app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
+def delete_item(index):
+    connection, cursor = get_cursor()
+    sql_query = "DELETE FROM dive WHERE id = %s"
+    cursor.execute(sql_query, (index,))
+    connection.commit()
+    cursor.close()
+    connection.close()
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+    return redirect(url_for('show_dives'))
+
+# @app.route('/show_dives')
+# def show_dives():
+#     connection, cursor = get_cursor()
+#     # cursor.execute("SELECT * FROM dive WHERE username = %s", (current_user.username,))
+#     user_dives = cursor.fetchall()
+#     cursor.close()
+#     connection.close()
+    
+#     return render_template('show_dives.html')
