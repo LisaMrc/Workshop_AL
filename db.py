@@ -15,3 +15,11 @@ def get_cursor():
 
 def get_mysql_connector_version():
     return mysql.connector.__version__
+
+def get_dives_data():
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT * FROM Dive")
+    rows = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return rows

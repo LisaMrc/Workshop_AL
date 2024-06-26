@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
-        <title>Your Dives</title>
+        <title>Username's Dashboard</title>
 	    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     
@@ -12,6 +12,7 @@
         <section class="content-section bg-light" id="dives">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5">
+
                     <div class="content-section-heading">
                         <h3 class="text-secondary mb-0">Welcome, username !</h3>
                     </div>
@@ -20,43 +21,51 @@
                         <h2>Your Dives</h2>
                         <p class="mb-5">See here your previous dives</p>	 
                         <table>
-                            {% for dive in dives %}
+                            <p>{{user_dives[0][0]}}</p>
+                            <!-- {% for user_dive in user_dives %}
                             <tr>
-                                <td>{{dive.dive_mins}}</td>
-                                <td>{{dive.dive_secs}}</td>
-                                <td>{{dive.dive_depth}}</td>
-                                <td>{{dive.dive_date}}</td>
-                                <td>{{dive.rating}}</td>
-                                <td><button class="btn btn-dark"><a href="/delete/{{loop.index0}}">Delete</a></button></td>
+                                <td>{{user_dive.dive_mins}}</td>
+                                <td>{{user_dive.dive_secs}}</td>
+                                <td>{{user_dive.dive_depth}}</td>
+                                <td>{{user_dive.dive_date}}</td>
+                                <td>{{user_dive.rating}}</td>
+                                <td><button class="btn btn-dark"><a href="delete_dive">Delete</a></button></td>
                             </tr>
-                            {% endfor %}
+                            {% endfor %} -->
                         </table>
                     </div>
-                        <div class="col-lg-5 d-flex flex-column mb-4">
-                            <h2 class="mb-5">New Dive</h2>
-                            <form action="/add" method="POST">
-                                <input type='text' id='nom' class="mb-5"> <!-- Cette ligne est l'input du template -->
-                                
-                                <br><label for="dive_mins">Number of minutes you dived :</label>
-                                <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5">
+                    
+                    <div class="col-lg-5 d-flex flex-column mb-4">
+                        <h2 class="mb-5">New Dive</h2>
+                        <form action="/add" method="POST">
+                            <br><label for="dive_mins">Number of minutes you dived :</label>
+                            <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5">
 
-                                <br><label for="dive_secs">Number of seconds you dived :</label>
-                                <br><input type='number' name="dive_secs" id='dive_secs' class="mb-5">
+                            <br><label for="dive_secs">Number of seconds you dived :</label>
+                            <br><input type='number' name="dive_secs" id='dive_secs' class="mb-5">
 
-                                <br><label for="dive_depth">Your dive depth :</label>
-                                <br><input type='number' name="dive_depth" id='dive_depth' class="mb-5">
+                            <br><label for="dive_depth">Your dive depth :</label>
+                            <br><input type='number' name="dive_depth" id='dive_depth' class="mb-5">
 
-                                <br><label for="dive_date">Your dive date :</label>
-                                <br><input type='date' name="dive_date" id='dive_date' class="mb-5">
+                            <br><label for="dive_date">Your dive date :</label>
+                            <br><input type='date' name="dive_date" id='dive_date' class="mb-5">
 
-                                <br><label for="rating">Your rating :</label>
-                                <br><input type='number' name="rating" id='rating' class="mb-5">
+                            <br><label for="rating">Your rating :</label>
+                            <br><input type='number' name="rating" id='rating' class="mb-5">
 
-                                <input type="submit" value="Submit">
-                            </form>
-                        </div>
+                            <input type="submit" value="Submit">
+                        </form>
                     </div>
+
                 </div>
+            </div>
+        </section>
+
+        <section class="content-section bg-dark text-white">
+            <div class="container px-4 px-lg-5 text-center">
+                <h2 class="mb-4">Here are your statistics</h2>
+                <a class="btn btn-xl btn-light me-4" href="/form">See all fishes</a>
+            </div>
         </section>
 
         <section class="content-section bg-primary text-white">
