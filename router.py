@@ -25,9 +25,9 @@ def get_record(id):
     cursor.close()
     connection.close()
     if row:
-        return jsonify(row)
+        return row
     else:
-        return jsonify({'message': 'Record not found'}), 404
+        return {'message': 'Record not found'}, 404
     
 @app.route('/your_table/<int:id>', methods=['PUT'])
 def update_record(id):
@@ -41,15 +41,32 @@ def update_record(id):
     return jsonify({'message': 'Record updated successfully'})
     
 @app.route("/")
-def landingPage():
+def render_landingPage():
     return render_template('landingPage.html')
 
-@app.route("/login")
-def login():
+@app.route("/render_login")
+def render_login():
     return render_template('login.html')
 
-@app.route("/signin")
-def signin():
+@app.route('/login_user', methods=['POST'])
+def verify_user():
+    username = request.form['username']
+    password = request.form['password']
+
+    connection, cursor = get_cursor()
+    sql_query = "SELECT username FROM diver WHERE username = %s AND password = %s"
+    cursor.execute(sql_query, (username, password))
+    result = cursor.fetchone()
+    cursor.close()
+    connection.close()
+
+    if result:
+        return "USER FOUND"
+    else:
+        return "USER NOT FOUND"
+
+@app.route("/render_signin")
+def render_signin():
     return render_template('signin.html')
 
 @app.route('/add_user', methods=['POST'])
