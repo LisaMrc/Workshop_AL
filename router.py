@@ -105,7 +105,8 @@ def add_dive():
     cursor.close()
     connection.close()
 
-    return "DIVE WAS ADDED SUCCESSFULLY"
+    data = db.get_dives_data()
+    return render_template('userDives.html', user_dives=data)
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
 def delete_item(index):
