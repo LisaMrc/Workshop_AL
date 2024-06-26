@@ -140,15 +140,19 @@ def delete_dive(index):
 
     return render_template('userDives.html', user_dives=data)
 
-@app.route('/edit_dive')
-def edit_dive(index):
-    # connection, cursor = get_cursor()
-    # sql_query = "DELETE FROM dive WHERE id = %s"
-    # cursor.execute(sql_query, (index,))
-    # connection.commit()
-    # cursor.close()
-    # connection.close()
+# @app.route('/edit_dive')
+# def edit_dive(index):
+#     # connection, cursor = get_cursor()
+#     # sql_query = "DELETE FROM dive WHERE id = %s"
+#     # cursor.execute(sql_query, (index,))
+#     # connection.commit()
+#     # cursor.close()
+#     # connection.close()
 
-    # data = db.get_dives_data()
+#     # data = db.get_dives_data()
 
-    return render_template('userDivesEdit.html')  
+#     return render_template('userDivesEdit.html')  
+
+@app.route("/render_one_dive")
+def render_edit():
+    return render_template('userDivesEdit.html')

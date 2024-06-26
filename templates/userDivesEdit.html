@@ -6,20 +6,15 @@
         <meta name="description" content="" />
         <title>Username's Dashboard</title>
 	    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-	    <link rel="stylesheet" href="{{ url_for('static', filename='myStyle.css') }}">
     </head>
     
     <body>
         <section class="content-section bg-light" id="dives">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5">
-
-                    <div class="content-section-heading">
-                        <h3 class="text-secondary mb-0">Welcome, username !</h3>
-                    </div>
                     
                     <div class="col-lg-5 d-flex flex-column mb-4">
-                        <h2 class="mb-5">New Dive</h2>
+                        <h2 class="mb-5">EDIT YOUR DIVE</h2>
                         <form action="/add" method="POST">
                             <br><label for="dive_mins">Number of minutes you dived :</label>
                             <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5">
@@ -43,20 +38,5 @@
                 </div>
             </div>
         </section>
-
-        <section class="content-section bg-dark text-white">
-            <div class="container px-4 px-lg-5 text-center">
-                <h2 class="mb-4">Here are your statistics</h2>
-            </div>
-        </section>
-
-        <section class="content-section bg-primary text-white">
-            <div class="container px-4 px-lg-5 text-center">
-                <h2 class="mb-4">Want to see all the fishes in our database ?</h2>
-                <a class="btn btn-xl btn-light me-4" href="/form">See all fishes</a>
-            </div>
-        </section>
-
-
     </body>
 </html>
