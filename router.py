@@ -70,9 +70,7 @@ def signin():
 @app.route("/dives")
 def user_dives_list():
     data = db.get_dives_data()
-    data_formated = jsonify(data)
-    print(data_formated)
-    return render_template('userDives.html', user_dives=data_formated)
+    return render_template('userDives.html', user_dives=data)
 
 @app.route('/add', methods=['POST'])
 def add_dive():
