@@ -23,41 +23,40 @@
                         <p class="mb-5">See here your previous dives</p>	 
                         <table class="my_table">
                             <thead>
-                                <th></th>
-                                <th>Time</th>
-                                <th>Depth</th>
-                                <th>Date</th>
-                                <th>Rating</th>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Time</th>
+                                    <th>Depth</th>
+                                    <th>Date</th>
+                                    <th>Rating</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 {% for entry in user_dives %}
-                                <tr>
-                                    {% for user_dive in entry %}
-                                        {% if loop.index0 == 0 %}
-                                            <td class="my_td">Dive n°{{user_dive}}</td>
-                                        {% elif loop.index0 == 1 %}
-                                            <td class="my_td">{{user_dive}}:{{loop.nextitem}}</td>
-                                        {% elif loop.index0 == 3 %}
-                                            <td class="my_td">{{user_dive}} m</td>
-                                        {% elif loop.index0 == 5 %}
-                                            <td class="my_td">{{user_dive}}/5</td>
-                                        {% elif loop.index0 != 2 %}
-                                            <td class="my_td">{{user_dive}}</td>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                    <td class="my_td">
-                                        <a href="/edit_dive">
-                                            <button class="btn btn-primary">Edit</button>
-                                        </a>
-                                    </td>
-                                    
-                                    <td class="my_td">
-                                        <a href="/delete_dive/{{loop.index0}}">
-                                            <button class="caption btn-close btn-warning"></button>
-                                        </a>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td class="my_td">Dive n°{{ loop.index }}</td> 
+                                        {% for user_dive in entry %}
+                                            {% if loop.index0 == 1 %}
+                                                <td class="my_td">{{user_dive}}:{{loop.nextitem}}</td>
+                                            {% elif loop.index0 == 3 %}
+                                                <td class="my_td">{{user_dive}} m</td>
+                                            {% elif loop.index0 == 5 %}
+                                                <td class="my_td">{{user_dive}}/5</td>
+                                            {% elif loop.index0 != 0 and loop.index0 != 2 %}
+                                                <td class="my_td">{{user_dive}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td class="my_td">
+                                            <a href="/edit_dive/{{ loop.index }}">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a>
+                                        </td>
+                                        <td class="my_td">
+                                            <a href="/delete_dive/{{ entry[0] }}"> <!-- Ensure you use the correct identifier -->
+                                                <button class="caption btn-close btn-warning"></button>
+                                            </a>
+                                        </td>
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>

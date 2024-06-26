@@ -84,10 +84,10 @@ def add_user():
 
     return "USER WAS ADDED SUCCESSFULLY"
 
-@app.route("/dives")
-def user_dives_list():
-    data = db.get_dives_data()
-    return render_template('userDives.html', user_dives=data)
+# @app.route("/dives")
+# def user_dives_list():
+#     data = db.get_dives_data()
+#     return render_template('userDives.html', user_dives=data)
 
 @app.route('/add', methods=['POST'])
 def add_dive():
@@ -117,14 +117,17 @@ def delete_item(index):
     cursor.close()
     connection.close()
 
-    return redirect(url_for('show_dives'))
+    data = db.get_dives_data()
 
-# @app.route('/show_dives')
-# def show_dives():
-#     connection, cursor = get_cursor()
-#     # cursor.execute("SELECT * FROM dive WHERE username = %s", (current_user.username,))
-#     user_dives = cursor.fetchall()
-#     cursor.close()
-#     connection.close()
+    return render_template('userDives.html', user_dives=data)    
+
+@app.route('/show_dives')
+def show_dives():
+    # connection, cursor = get_cursor()
+    # # cursor.execute("SELECT * FROM dive WHERE username = %s", (current_user.username,))
+    # user_dives = cursor.fetchall()
+    # cursor.close()
+    # connection.close()
+    data = db.get_dives_data()
     
-#     return render_template('show_dives.html')
+    return render_template('userDives.html', user_dives=data)    
