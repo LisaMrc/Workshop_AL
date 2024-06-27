@@ -23,3 +23,10 @@ def get_dives_data():
     cursor.close()
     connection.close()
     return rows
+
+def get_places():
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT place_id, place_name FROM place")
+    places = cursor.fetchall()
+    connection.close()
+    return places
