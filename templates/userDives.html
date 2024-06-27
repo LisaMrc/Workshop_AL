@@ -14,15 +14,13 @@
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5">
 
-                    <div class="content-section-heading">
-                        <h3 class="text-secondary mb-0">Welcome, username !</h3>
-                    </div>
-
                     {% block y %}
                         {% if session.username %}
-                            You are Register {{ session.username }} <a href="/logout">logout</a>.
+                            <div class="content-section-heading">
+                                <h3 class="text-secondary mb-0">Welcome, {{ session.username }} !</h3>
+                            </div>
                         {% else %}
-                            You are not Register. <a href="/login">login</a>.
+                            <h3 class="text-secondary mb-0">Uh oh, something went wrong with your session. Try to log again</h3> <a href="/login">login</a>.
                         {% endif %}
             
                     {% endblock %}
