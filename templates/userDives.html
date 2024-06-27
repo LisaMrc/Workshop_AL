@@ -17,47 +17,57 @@
                     <div class="content-section-heading">
                         <h3 class="text-secondary mb-0">Welcome, username !</h3>
                     </div>
+
+                    {% block y %}
+                        {% if session.username %}
+                            You are Register {{ session.username }} <a href="/logout">logout</a>.
+                        {% else %}
+                            You are not Register. <a href="/login">login</a>.
+                        {% endif %}
+            
+                    {% endblock %}
                     
                     <div class="col-lg-5 d-flex flex-column align-items-left mb-4">
                         <h2>Your Dives</h2>
                         <p class="mb-5">See here your previous dives</p>	 
                         <table class="my_table">
                             <thead>
-                                <th></th>
-                                <th>Time</th>
-                                <th>Depth</th>
-                                <th>Date</th>
-                                <th>Rating</th>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Time</th>
+                                    <th>Depth</th>
+                                    <th>Date</th>
+                                    <th>Rating</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 {% for entry in user_dives %}
-                                <tr>
-                                    {% for user_dive in entry %}
-                                        {% if loop.index0 == 0 %}
-                                            <td class="my_td">Dive n°{{user_dive}}</td>
-                                        {% elif loop.index0 == 1 %}
-                                            <td class="my_td">{{user_dive}}:{{loop.nextitem}}</td>
-                                        {% elif loop.index0 == 3 %}
-                                            <td class="my_td">{{user_dive}} m</td>
-                                        {% elif loop.index0 == 5 %}
-                                            <td class="my_td">{{user_dive}}/5</td>
-                                        {% elif loop.index0 != 2 %}
-                                            <td class="my_td">{{user_dive}}</td>
-                                        {% endif %}
-                                    {% endfor %}
+                                    <tr>
+                                        <td class="my_td">Dive n°{{ loop.index }}</td> 
+                                        {% for user_dive in entry %}
+                                            {% if loop.index0 == 1 %}
+                                                <td class="my_td">{{user_dive}}:{{loop.nextitem}}</td>
+                                            {% elif loop.index0 == 3 %}
+                                                <td class="my_td">{{user_dive}} m</td>
+                                            {% elif loop.index0 == 5 %}
+                                                <td class="my_td">{{user_dive}}/5</td>
+                                            {% elif loop.index0 != 0 and loop.index0 != 2 %}
+                                                <td class="my_td">{{user_dive}}</td>
+                                            {% endif %}
+                                        {% endfor %}
 
-                                    <td class="my_td">
-                                        <a href="/edit_dive">
-                                            <button class="btn btn-primary">Edit</button>
-                                        </a>
-                                    </td>
-                                    
-                                    <td class="my_td">
-                                        <a href="/delete_dive/{{loop.index0}}">
-                                            <button class="caption btn-close btn-warning"></button>
-                                        </a>
-                                    </td>
-                                </tr>
+                                        <td class="my_td">
+                                            <a href="/render_one_dive/{{ entry[0] }}">
+                                                <button class="button">Edit</button>
+                                            </a>
+                                        </td>
+                                        
+                                        <td class="my_td">
+                                            <a href="/delete_dive/{{ entry[0] }}">
+                                                <button class="caption btn-close btn-warning"></button>
+                                            </a>
+                                        </td>
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -84,8 +94,10 @@
                             <br><input class="btn btn-primary" type="submit" value="Ajouter">
                         </form>
                     </div>
-
                 </div>
+                <a href="/logout">
+                    <button class="caption btn-outline-warning">Logout</button>
+                </a>
             </div>
         </section>
 
