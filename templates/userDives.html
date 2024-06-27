@@ -36,7 +36,9 @@
                                     <th>Depth</th>
                                     <th>Date</th>
                                     <th>Rating</th>
-                                    <th>Place</th>
+                                    <th>Country</th>
+                                    <th>Place Name</th>
+                                    <th>Environnement</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,9 +52,7 @@
                                                 <td class="my_td">{{user_dive}} m</td>
                                             {% elif loop.index0 == 5 %}
                                                 <td class="my_td">{{user_dive}}/5</td>
-                                            {% elif loop.index0 == 7 %}
-                                                <td class="my_td">{{user_dive}}</td>
-                                            {% elif loop.index0 != 0 and loop.index0 != 2 and loop.index0 != 6 and loop.index0 != 8 %}
+                                            {% elif loop.index0 != 0 and loop.index0 != 2 and loop.index0 != 6 and loop.index0 != 7 and loop.index0 != 8 and loop.index0 != 9 %}
                                                 <td class="my_td">{{user_dive}}</td>
                                             {% endif %}
                                         {% endfor %}
@@ -118,6 +118,12 @@
         <section class="content-section bg-dark text-white">
             <div class="container px-4 px-lg-5 text-center">
                 <h2 class="mb-4">Here are your statistics</h2>
+                
+                <h3>You dived an average of :</h3>
+                <p>{{ avg_depth }} meters deep, during {{ avg_mins }} minutes and {{ avg_secs }}</p>
+
+                <h3>The biggest fish you saw was :</h3>
+                <p></p>
             </div>
         </section>
 
@@ -147,4 +153,3 @@
         </script>
     </body>
 </html>
-    
