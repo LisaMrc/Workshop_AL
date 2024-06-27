@@ -83,6 +83,13 @@ def add_user():
             return redirect("/show_dives")
         else:
             return "Error creating user", 500
+        
+def get_places():
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT place_name FROM places")
+    places = cursor.fetchall()
+    connection.close()
+    return places
 
 @app.route('/show_dives')
 def show_dives():

@@ -76,19 +76,24 @@
                         <form action="/add" method="POST">
                             <br><label for="dive_mins">Number of minutes you dived :</label>
                             <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5">
-
+                        
                             <br><label for="dive_secs">Number of seconds you dived :</label>
                             <br><input type='number' name="dive_secs" id='dive_secs' class="mb-5">
-
+                        
                             <br><label for="dive_depth">Your dive depth :</label>
                             <br><input type='number' name="dive_depth" id='dive_depth' class="mb-5">
-
+                        
                             <br><label for="dive_date">Your dive date :</label>
                             <br><input type='date' name="dive_date" id='dive_date' class="mb-5">
-
+                        
                             <br><label for="rating">Your rating :</label>
                             <br><input type='number' name="rating" id='rating' class="mb-5">
-
+                        
+                            <br><label for="place_name">Where you dived :</label>
+                            <br><input type='text' name="place_name" class="mb-5">
+                        
+                            <br><button type="button" onclick="addFishEntry()">Add Another Fish</button>
+                        
                             <br><input class="btn btn-primary" type="submit" value="Ajouter">
                         </form>
                     </div>
@@ -113,3 +118,22 @@
         </section>
     </body>
 </html>
+
+<script>
+    let fishCounter = 1;
+
+    function addFishEntry() {
+        fishCounter++;
+        const fishContainer = document.getElementById('fish-container');
+        const newFishEntry = document.createElement('div');
+        newFishEntry.classList.add('fish-entry');
+        newFishEntry.innerHTML = `
+            <br><label for="fish_name_${fishCounter}">Fish Name :</label>
+            <br><input type='text' name="fish_name[]" class="mb-5">
+
+            <br><label for="fish_code_${fishCounter}">Fish Code :</label>
+            <br><input type='text' name="fish_code[]" class="mb-5">
+        `;
+        fishContainer.appendChild(newFishEntry);
+    }
+</script>
