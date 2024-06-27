@@ -17,6 +17,15 @@
                     <div class="content-section-heading">
                         <h3 class="text-secondary mb-0">Welcome, username !</h3>
                     </div>
+
+                    {% block y %}
+                        {% if session.username %}
+                            You are Register {{ session.username }} <a href="/logout">logout</a>.
+                        {% else %}
+                            You are not Register. <a href="/login">login</a>.
+                        {% endif %}
+            
+                    {% endblock %}
                     
                     <div class="col-lg-5 d-flex flex-column align-items-left mb-4">
                         <h2>Your Dives</h2>
@@ -85,8 +94,10 @@
                             <br><input class="btn btn-primary" type="submit" value="Ajouter">
                         </form>
                     </div>
-
                 </div>
+                <a href="/logout">
+                    <button class="caption btn-outline-warning">Logout</button>
+                </a>
             </div>
         </section>
 

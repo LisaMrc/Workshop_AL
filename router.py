@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-from flask import Flask,request,render_template,jsonify, redirect
+from flask import Flask,request, render_template, jsonify, redirect, session
 from flask_cors import CORS
+from flask_session import Session
 from db import get_mysql_connector_version, get_cursor
 import db
 
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 CORS(app)
 
 @app.route("/sql_version")
@@ -12,34 +16,11 @@ def sqlVersion():
     version = get_mysql_connector_version()
     return f"MySQL Connector version: {version}"
 
-@app.route('/viewRecord/<int:id>', methods=['GET'])
-def get_record(id):
-    connection, cursor = get_cursor()
-    cursor.execute("SELECT * FROM Dive WHERE id = %s", (id,))
-    row = cursor.fetchone()
-    cursor.close()
-    connection.close()
-    if row:
-        return row
-    else:
-        return {'message': 'Record not found'}, 404
-    
-@app.route('/your_table/<int:id>', methods=['PUT'])
-def update_record(id):
-    data = request.get_json()
-    new_name = data.get('name')
-    connection, cursor = get_cursor()
-    cursor.execute("UPDATE your_table SET name = %s WHERE id = %s", (new_name, id))
-    connection.commit()
-    cursor.close()
-    connection.close()
-    return jsonify({'message': 'Record updated successfully'})
-    
 @app.route("/")
 def render_landingPage():
     return render_template('landingPage.html')
 
-@app.route("/render_login")
+@app.route("/render_login", methods=["POST", "GET"])
 def render_login():
     return render_template('login.html')
 
@@ -56,9 +37,9 @@ def verify_user():
     connection.close()
 
     if result:
-        return "USER FOUND"
+        return redirect("/show_dives")
     else:
-        return "USER NOT FOUND"
+        return redirect("/render_login")
 
 @app.route("/render_signin")
 def render_signin():
@@ -146,7 +127,6 @@ def render_edit(index):
 
     return render_template('userDivesEdit.html', entry=row)
 
-# TODO:make route to validate dive edit
 @app.route("/edit_dive/<int:index>", methods=['GET', 'POST'])
 def edit_dive(index):
     dive_mins = request.form['dive_mins']
@@ -162,3 +142,11 @@ def edit_dive(index):
     cursor.close()
     connection.close()
     return redirect("/show_dives", code=302)
+
+@app.route("/logout")
+def logout():
+    session["username"] = None
+    return redirect("/")
+ 
+if __name__ == "__main__":
+    app.run(debug=True)
