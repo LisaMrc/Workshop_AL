@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask,request,render_template,jsonify
+from flask import Flask,request,render_template,jsonify, redirect
 from flask_cors import CORS
 from db import get_mysql_connector_version, get_cursor
 import db
@@ -92,11 +92,6 @@ def add_user():
 
         return "USER WAS ADDED SUCCESSFULLY"
 
-# @app.route("/dives")
-# def user_dives_list():
-#     data = db.get_dives_data()
-#     return render_template('userDives.html', user_dives=data)
-
 @app.route('/show_dives')
 def show_dives():
     # connection, cursor = get_cursor()
@@ -140,19 +135,30 @@ def delete_dive(index):
 
     return render_template('userDives.html', user_dives=data)
 
-# @app.route('/edit_dive')
-# def edit_dive(index):
-#     # connection, cursor = get_cursor()
-#     # sql_query = "DELETE FROM dive WHERE id = %s"
-#     # cursor.execute(sql_query, (index,))
-#     # connection.commit()
-#     # cursor.close()
-#     # connection.close()
+@app.route("/render_one_dive/<int:index>", methods=['GET', 'POST'])
+def render_edit(index):
+    connection, cursor = get_cursor()
+    sql_query = "SELECT * FROM dive WHERE id = %s"
+    cursor.execute(sql_query, (index,))
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
 
-#     # data = db.get_dives_data()
+    return render_template('userDivesEdit.html', entry=row)
 
-#     return render_template('userDivesEdit.html')  
+# TODO:make route to validate dive edit
+@app.route("/edit_dive/<int:index>", methods=['GET', 'POST'])
+def edit_dive(index):
+    dive_mins = request.form['dive_mins']
+    dive_secs = request.form['dive_secs']
+    dive_depth = request.form['dive_depth']
+    dive_date = request.form['dive_date']
+    rating = request.form['rating']
 
-@app.route("/render_one_dive")
-def render_edit():
-    return render_template('userDivesEdit.html')
+    connection, cursor = get_cursor()
+    sql_query = "UPDATE dive SET dive_mins = %s, dive_secs = %s, dive_depth = %s, dive_date = %s, rating = %s WHERE id = %s"
+    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, index))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return redirect("/show_dives", code=302)

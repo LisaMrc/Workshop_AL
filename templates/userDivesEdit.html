@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
-        <title>Username's Dashboard</title>
+        <title>Edit a dive</title>
 	    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     
@@ -14,24 +14,24 @@
                 <div class="row gx-4 gx-lg-5">
                     
                     <div class="col-lg-5 d-flex flex-column mb-4">
-                        <h2 class="mb-5">EDIT YOUR DIVE</h2>
-                        <form action="/add" method="POST">
+                        <h2 class="mb-5">Edit your dive</h2>
+                        <form action="/edit_dive/{{ entry[0] }}" method="POST">
                             <br><label for="dive_mins">Number of minutes you dived :</label>
-                            <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5">
+                            <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5" placeholder="{{ entry[1] }}">
 
                             <br><label for="dive_secs">Number of seconds you dived :</label>
-                            <br><input type='number' name="dive_secs" id='dive_secs' class="mb-5">
+                            <br><input type='number' name="dive_secs" id='dive_secs' class="mb-5" placeholder="{{ entry[2] }}">
 
                             <br><label for="dive_depth">Your dive depth :</label>
-                            <br><input type='number' name="dive_depth" id='dive_depth' class="mb-5">
+                            <br><input type='number' name="dive_depth" id='dive_depth' class="mb-5" placeholder="{{ entry[3] }}">
 
                             <br><label for="dive_date">Your dive date :</label>
-                            <br><input type='date' name="dive_date" id='dive_date' class="mb-5">
+                            <br><input type='date' name="dive_date" id='dive_date' class="mb-5" placeholder="{{ entry[4] }}">
 
                             <br><label for="rating">Your rating :</label>
-                            <br><input type='number' name="rating" id='rating' class="mb-5">
+                            <br><input type='number' name="rating" id='rating' class="mb-5" placeholder="{{ entry[5] }}">
 
-                            <br><input class="btn btn-primary" type="submit" value="Ajouter">
+                            <br><input class="btn btn-success" type="submit" value="Validate Edit">
                         </form>
                     </div>
 
