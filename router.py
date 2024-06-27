@@ -49,36 +49,55 @@ def render_signin():
 def add_user():
     username = request.form['username']
     password = request.form['password']
+    
+    # Does the user exists ?
     connection, cursor = get_cursor()
-    sql_query = "SELECT username FROM diver WHERE username = %s AND password = %s"
-    cursor.execute(sql_query, (username, password))
+    sql_query = "SELECT username FROM diver WHERE username = %s"
+    cursor.execute(sql_query, (username,))
     result = cursor.fetchone()
     cursor.close()
     connection.close()
+
     if result:
-        return "ALREADY IN DATABASE"
+        return redirect("/render_login")
     else:
-        username = request.form['username']
-        password = request.form['password']
-
+        # If user do not exist, create new user
         connection, cursor = get_cursor()
-
         sql_query = "INSERT INTO diver (username, password) VALUES (%s, %s)"
         cursor.execute(sql_query, (username, password))
         connection.commit()
         cursor.close()
         connection.close()
 
-        return "USER WAS ADDED SUCCESSFULLY"
+        # Redirect user towards their new dashboard
+        connection, cursor = get_cursor()
+        sql_query = "SELECT id, username FROM diver WHERE username = %s"
+        cursor.execute(sql_query, (username,))
+        result = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        if result:
+            session['id'] = result[0]
+            session['username'] = result[1]
+            return redirect("/show_dives")
+        else:
+            return "Error creating user", 500
 
 @app.route('/show_dives')
 def show_dives():
-    connection, cursor = get_cursor()
-    cursor.execute("SELECT * FROM dive WHERE username = %s", (session['username']))
-    user_dives = cursor.fetchall()
-    cursor.close()
-    connection.close()
-    return render_template('userDives.html', user_dives=user_dives)    
+    try:
+        connection, cursor = get_cursor()
+        cursor.execute("SELECT * FROM dive WHERE diver_id = %s", (session['id'],))
+        user_dives = cursor.fetchall()
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+        return "An error occurred while fetching dives", 500
+    finally:
+        cursor.close()
+        connection.close()
+    
+    return render_template('userDives.html', user_dives=user_dives)
 
 @app.route('/add', methods=['POST'])
 def add_dive():
