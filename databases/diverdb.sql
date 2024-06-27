@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 26 juin 2024 à 10:03
+-- Généré le : jeu. 27 juin 2024 à 10:35
 -- Version du serveur : 8.3.0
 -- Version de PHP : 8.2.18
 
@@ -34,21 +34,18 @@ CREATE TABLE IF NOT EXISTS `dive` (
   `dive_secs` int DEFAULT NULL,
   `dive_depth` int DEFAULT NULL,
   `dive_date` date DEFAULT NULL,
-  `rating` int DEFAULT NULL,
+  `rating` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `dive`
 --
 
 INSERT INTO `dive` (`id`, `dive_mins`, `dive_secs`, `dive_depth`, `dive_date`, `rating`) VALUES
-(1, 12, 30, 58, '2024-02-18', 5),
-(2, 22, 24, 64, '2024-05-12', 2),
-(3, 54, 41, 77, '2024-05-22', 3),
-(4, 41, 42, 97, '2024-06-02', 1),
-(5, 2, 34, 43, '2024-06-19', 4),
-(6, 70, 40, 80, '2024-06-22', 5);
+(10, 35, 20, 15, '2024-06-27', 4),
+(9, 100, 30, 75, '2024-06-05', 3),
+(11, 30, 20, 9, '2024-06-03', 4);
 
 -- --------------------------------------------------------
 
@@ -62,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `diver` (
   `username` varchar(14) NOT NULL,
   `password` varchar(14) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `diver`
@@ -71,7 +68,8 @@ CREATE TABLE IF NOT EXISTS `diver` (
 INSERT INTO `diver` (`id`, `username`, `password`) VALUES
 (1, 'Jason_Momoa', 'Aquaman_du77!'),
 (2, 'Jason_Derulo', 'TrumpetBoy93'),
-(3, 'TestUser', 'lala');
+(3, 'TestUser', 'lala'),
+(4, 'TestUser2', 'Hello');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
