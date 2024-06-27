@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import requests
 from flask import Flask,request,render_template,jsonify
 from flask_cors import CORS
 from db import get_mysql_connector_version, get_cursor
 import db
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -118,6 +120,16 @@ def delete_item(index):
     connection.close()
 
     return redirect(url_for('show_dives'))
+
+# @app.route('/fishes', methods=['GET'])
+# def seeFishes():
+#     return render_template("allFishes.html")
+
+@app.route('/fishes', methods=['GET'])
+def seeFishes():
+    with open('./static/fish.json', 'r') as f:
+        fish_data = json.load(f)
+    return render_template("allFishes.html", fishes = fish_data)
 
 # @app.route('/show_dives')
 # def show_dives():

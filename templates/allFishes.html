@@ -6,6 +6,7 @@
         <meta name="description" content="" />
         <title>Fish Database</title>
 	    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	    <link rel="stylesheet" href="{{ url_for('static', filename='myStyle.css') }}">
     </head>
     
     <body>
@@ -17,12 +18,11 @@
                         <table>
                             {% for fish in fishes %}
                             <tr>
-                                <td>{{fish.species}}</td>
-                                <td>{{fish.comname}}</td>
-                                <td>{{fish.country}}</td>
-                                <td>{{fish.diet}}</td>
-                                <td>{{fish.size}}</td>
-                                <td><button><a href="/delete/{{loop.index0}}">Delete</a></button></td>
+                                <td><img src="{{ url_for('static', filename='assets/fish/' ~ fish.img) }}" alt="fish" class="fishImg"></td>
+                                <td>{{fish.common_name}}</td>
+                                <td>{{fish.scientific_name}}</td>
+                                <td>{{fish.family}}</td>
+                                <td>{{fish.average_size}}</td>
                             </tr>
                             {% endfor %}
                         </table>
@@ -32,5 +32,6 @@
                 </div>
             </div>
         </section>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>

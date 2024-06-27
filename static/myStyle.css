@@ -10,3 +10,9 @@
     padding: 8px;
     text-align: center;
 }
+
+.fishImg
+{
+    max-width: 10em;
+    max-height: auto;
+}
