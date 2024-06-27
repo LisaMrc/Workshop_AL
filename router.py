@@ -49,7 +49,6 @@ def render_signin():
 def add_user():
     username = request.form['username']
     password = request.form['password']
-    
     # Does the user exists ?
     connection, cursor = get_cursor()
     sql_query = "SELECT username FROM diver WHERE username = %s"
@@ -57,7 +56,6 @@ def add_user():
     result = cursor.fetchone()
     cursor.close()
     connection.close()
-
     if result:
         return redirect("/render_login")
     else:
@@ -132,22 +130,18 @@ def delete_dive(index):
     connection.commit()
     cursor.close()
     connection.close()
-    data = db.get_dives_data()
     return redirect("/show_dives")
 
-@app.route('/fishes')
-def show_fishes():
-    return render_template("allFishes.html")
-
-@app.route('/api/fishes')
-def get_fishes():
-    conn = db.get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM fish')
-    fishes = cursor.fetchall()
+@app.route("/render_one_dive/<int:index>", methods=['GET', 'POST'])
+def render_edit(index):
+    connection, cursor = get_cursor()
+    sql_query = "SELECT * FROM dive WHERE id = %s"
+    cursor.execute(sql_query, (index,))
+    row = cursor.fetchone()
     cursor.close()
-    conn.close()
-    return jsonify(fishes)
+    connection.close()
+    places = get_places()
+    return render_template('userDivesEdit.html', entry=row, places=places)
 
 # TODO: edit edit route to change place
 @app.route("/edit_dive/<int:index>", methods=['GET', 'POST'])
@@ -166,6 +160,20 @@ def edit_dive(index):
     cursor.close()
     connection.close()
     return redirect("/show_dives", code=302)
+
+@app.route('/fishes')
+def show_fishes():
+    return render_template("allFishes.html")
+
+@app.route('/api/fishes')
+def get_fishes():
+    conn = db.get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM fish')
+    fishes = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(fishes)
 
 @app.route("/logout")
 def logout():
