@@ -81,13 +81,6 @@ def add_user():
             return redirect("/show_dives")
         else:
             return "Error creating user", 500
-        
-def get_places():
-    connection, cursor = get_cursor()
-    cursor.execute("SELECT place_id, place_name FROM place")
-    places = cursor.fetchall()
-    connection.close()
-    return places
 
 @app.route('/show_dives')
 def show_dives():
@@ -101,7 +94,7 @@ def show_dives():
     finally:
         cursor.close()
         connection.close()
-    places = get_places()
+    places = db.get_places()
     return render_template('userDives.html', user_dives=user_dives, places=places)
 
 @app.route('/add', methods=['POST'])
@@ -140,7 +133,7 @@ def render_edit(index):
     row = cursor.fetchone()
     cursor.close()
     connection.close()
-    places = get_places()
+    places = db.get_places()
     return render_template('userDivesEdit.html', entry=row, places=places)
 
 # TODO: edit edit route to change place
