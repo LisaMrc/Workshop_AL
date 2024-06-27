@@ -6,6 +6,7 @@
         <meta name="description" content="" />
         <title>Fish Database</title>
 	    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	    <link rel="stylesheet" href="{{ url_for('static', filename='myStyle.css') }}">
     </head>
     
     <body>
@@ -14,23 +15,14 @@
                 <div class="row gx-4 gx-lg-5">
                     <div class="col-lg-5 d-flex flex-column align-items-left mb-4">
                         <h1>Fish list</h1>
-                        <table>
-                            {% for fish in fishes %}
-                            <tr>
-                                <td>{{fish.species}}</td>
-                                <td>{{fish.comname}}</td>
-                                <td>{{fish.country}}</td>
-                                <td>{{fish.diet}}</td>
-                                <td>{{fish.size}}</td>
-                                <td><button><a href="/delete/{{loop.index0}}">Delete</a></button></td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-
+                        <div id="fishes-table" class="fishContainer">
+                                <!-- Fish data -->
+                        </div>
                         <button class="btn btn-primary btn-xl" href="/userDives">Back to your dives</button>
                     </div>
                 </div>
             </div>
         </section>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>

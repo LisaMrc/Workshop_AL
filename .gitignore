@@ -4,3 +4,4 @@ env/
 
 # Ignore the __pycache__ directory
 __pycache__/
+flask_session/

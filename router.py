@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import requests
 from flask import Flask,request, render_template, jsonify, redirect, session
 from flask_cors import CORS
 from flask_session import Session
 from db import get_mysql_connector_version, get_cursor
 import db
+import json
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
@@ -137,6 +139,20 @@ def delete_dive(index):
     data = db.get_dives_data()
 
     return render_template('userDives.html', user_dives=data)
+
+@app.route('/fishes')
+def show_fishes():
+    return render_template("allFishes.html")
+
+@app.route('/api/fishes')
+def get_fishes():
+    conn = db.get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM fish')
+    fishes = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(fishes)
 
 @app.route("/render_one_dive/<int:index>", methods=['GET', 'POST'])
 def render_edit(index):
