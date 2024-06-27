@@ -28,15 +28,15 @@ def render_login():
 def verify_user():
     username = request.form['username']
     password = request.form['password']
-
     connection, cursor = get_cursor()
-    sql_query = "SELECT username FROM diver WHERE username = %s AND password = %s"
+    sql_query = "SELECT * FROM diver WHERE username = %s AND password = %s"
     cursor.execute(sql_query, (username, password))
     result = cursor.fetchone()
     cursor.close()
     connection.close()
-
     if result:
+        session['id'] = result[0]
+        session['username'] = username
         return redirect("/show_dives")
     else:
         return redirect("/render_login")
@@ -49,14 +49,12 @@ def render_signin():
 def add_user():
     username = request.form['username']
     password = request.form['password']
-
     connection, cursor = get_cursor()
     sql_query = "SELECT username FROM diver WHERE username = %s AND password = %s"
     cursor.execute(sql_query, (username, password))
     result = cursor.fetchone()
     cursor.close()
     connection.close()
-
     if result:
         return "ALREADY IN DATABASE"
     else:
@@ -75,14 +73,12 @@ def add_user():
 
 @app.route('/show_dives')
 def show_dives():
-    # connection, cursor = get_cursor()
-    # # cursor.execute("SELECT * FROM dive WHERE username = %s", (current_user.username,))
-    # user_dives = cursor.fetchall()
-    # cursor.close()
-    # connection.close()
-    data = db.get_dives_data()
-    
-    return render_template('userDives.html', user_dives=data)    
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT * FROM dive WHERE username = %s", (session['username']))
+    user_dives = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return render_template('userDives.html', user_dives=user_dives)    
 
 @app.route('/add', methods=['POST'])
 def add_dive():
