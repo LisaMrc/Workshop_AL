@@ -50,16 +50,16 @@
                                                 <td class="my_td">{{user_dive}} m</td>
                                             {% elif loop.index0 == 5 %}
                                                 <td class="my_td">{{user_dive}}/5</td>
-                                            {% elif loop.index0 == 6 %}
+                                            {% elif loop.index0 == 7 %}
                                                 <td class="my_td">{{user_dive}}</td>
-                                            {% elif loop.index0 != 0 and loop.index0 != 2 and loop.index0 != 7 and loop.index0 != 8 %}
+                                            {% elif loop.index0 != 0 and loop.index0 != 2 and loop.index0 != 6 and loop.index0 != 8 %}
                                                 <td class="my_td">{{user_dive}}</td>
                                             {% endif %}
                                         {% endfor %}
 
                                         <td class="my_td">
                                             <a href="/render_one_dive/{{ entry[0] }}">
-                                                <button class="button">Edit</button>
+                                                <button class="btn btn-primary">Edit</button>
                                             </a>
                                         </td>
                                         
@@ -104,7 +104,7 @@
                     </div>
                 </div>
                 <a href="/logout">
-                    <button class="caption btn-outline-warning">Logout</button>
+                    <button class="btn-outline-warning">Logout</button>
                 </a>
             </div>
         </section>
