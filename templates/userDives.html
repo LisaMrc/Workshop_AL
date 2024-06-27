@@ -112,6 +112,12 @@
         <section class="content-section bg-dark text-white">
             <div class="container px-4 px-lg-5 text-center">
                 <h2 class="mb-4">Here are your statistics</h2>
+                
+                <h3>You dived an average of :</h3>
+                <p>{{ avg_depth }} meters deep, during {{ avg_mins }} minutes and {{ avg_secs }}</p>
+
+                <h3>The biggest fish you saw was :</h3>
+                <p></p>
             </div>
         </section>
 
@@ -123,22 +129,3 @@
         </section>
     </body>
 </html>
-
-<script>
-    let fishCounter = 1;
-
-    function addFishEntry() {
-        fishCounter++;
-        const fishContainer = document.getElementById('fish-container');
-        const newFishEntry = document.createElement('div');
-        newFishEntry.classList.add('fish-entry');
-        newFishEntry.innerHTML = `
-            <br><label for="fish_name_${fishCounter}">Fish Name :</label>
-            <br><input type='text' name="fish_name[]" class="mb-5">
-
-            <br><label for="fish_code_${fishCounter}">Fish Code :</label>
-            <br><input type='text' name="fish_code[]" class="mb-5">
-        `;
-        fishContainer.appendChild(newFishEntry);
-    }
-</script>

@@ -94,8 +94,13 @@ def show_dives():
     finally:
         cursor.close()
         connection.close()
+
     places = db.get_places()
-    return render_template('userDives.html', user_dives=user_dives, places=places)
+    average_depth = sum(dive[3] for dive in user_dives) / len(user_dives) if user_dives else 0
+    average_mins = sum(dive[1] for dive in user_dives) / len(user_dives) if user_dives else 0
+    average_secs = sum(dive[2] for dive in user_dives) / len(user_dives) if user_dives else 0
+
+    return render_template('userDives.html', user_dives=user_dives, places=places, avg_depth=average_depth, avg_mins=average_mins, average_secs=average_secs)
 
 @app.route('/add', methods=['POST'])
 def add_dive():
