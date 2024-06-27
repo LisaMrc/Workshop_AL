@@ -86,7 +86,7 @@ def add_user():
 def show_dives():
     try:
         connection, cursor = get_cursor()
-        cursor.execute("SELECT * FROM dive WHERE diver_id = %s", (session['id'],))
+        cursor.execute("SELECT * FROM dive JOIN place ON dive.place_id = place.place_id WHERE diver_id = %s", (session['id'],))
         user_dives = cursor.fetchall()
     except Exception as e:
         logging.error(f"An error occurred: {e}")
