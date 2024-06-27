@@ -1,0 +1,4 @@
+- log in account not there : message no account
+- sign in there : username already used
+- log in pwd incorrect : message pwd incorrect
+- overlay fishes already seen in see all fishes
