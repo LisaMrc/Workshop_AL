@@ -31,6 +31,13 @@
                             <br><label for="rating">Your rating :</label>
                             <br><input type='number' name="rating" id='rating' class="mb-5" placeholder="{{ entry[5] }}">
 
+                            <br><label for="place">Where you dived :</label>
+                            <br><select name="place" class="mb-5">
+                                {% for place in places %}
+                                    <option value="{{ place[0] }}">{{ place[1] }}</option>
+                                {% endfor %}
+                            </select>
+
                             <br><input class="btn btn-success" type="submit" value="Validate Edit">
                         </form>
                     </div>
