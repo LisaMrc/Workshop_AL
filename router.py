@@ -114,11 +114,19 @@ def delete_dive(index):
 
     return render_template('userDives.html', user_dives=data)
 
-@app.route('/fishes', methods=['GET'])
-def seeFishes():
-    with open('./static/fish.json', 'r') as f:
-        fish_data = json.load(f)
-    return render_template("allFishes.html", fishes = fish_data)
+@app.route('/fishes')
+def show_fishes():
+    return render_template("allFishes.html")
+
+@app.route('/api/fishes')
+def get_fishes():
+    conn = db.get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM fish')
+    fishes = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(fishes)
 
 @app.route("/render_one_dive/<int:index>", methods=['GET', 'POST'])
 def render_edit(index):

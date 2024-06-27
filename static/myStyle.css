@@ -11,7 +11,15 @@
     text-align: center;
 }
 
-.fishImg
+.fishContainer
+{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.fishContainer img
 {
     max-width: 10em;
     max-height: auto;
