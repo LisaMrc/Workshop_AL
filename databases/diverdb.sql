@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 27 juin 2024 à 20:57
+-- Généré le : ven. 28 juin 2024 à 10:02
 -- Version du serveur : 8.3.0
 -- Version de PHP : 8.2.18
 
@@ -40,20 +40,9 @@ CREATE TABLE IF NOT EXISTS `dive` (
   `fish_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `diver_id` (`diver_id`),
-  KEY `place_id` (`place_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `dive`
---
-
-INSERT INTO `dive` (`id`, `dive_mins`, `dive_secs`, `dive_depth`, `dive_date`, `rating`, `diver_id`, `place_id`, `fish_id`) VALUES
-(10, 35, 20, 15, '2024-06-27', 4, 1, 1, 1),
-(9, 100, 30, 75, '2024-06-05', 3, 1, 1, 1),
-(11, 30, 20, 9, '2024-06-03', 4, 1, 1, 1),
-(12, 20, 10, 5, '2024-06-14', 0, 3, 0, 0),
-(16, 2, 4, 0, '2024-06-17', 4, 3, 5, 0),
-(17, 22, 22, 22, '2024-06-22', 2, 3, 3, 0);
+  KEY `place_id` (`place_id`),
+  KEY `fish_id` (`fish_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -67,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `diver` (
   `username` varchar(14) NOT NULL,
   `password` varchar(14) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `diver`
@@ -78,7 +67,32 @@ INSERT INTO `diver` (`id`, `username`, `password`) VALUES
 (2, 'Jason_Derulo', 'TrumpetBoy93'),
 (3, 'TestUser', 'lala'),
 (4, 'TestUser2', 'Hello'),
-(5, 'Chris_Martins', 'lolelo');
+(5, 'Chris_Martins', 'lolelo'),
+(6, 'Lisa', 'coldplay');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `dive_fish`
+--
+
+DROP TABLE IF EXISTS `dive_fish`;
+CREATE TABLE IF NOT EXISTS `dive_fish` (
+  `dive_id` int NOT NULL,
+  `fish_id` int NOT NULL,
+  PRIMARY KEY (`dive_id`,`fish_id`),
+  KEY `fish_id` (`fish_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `dive_fish`
+--
+
+INSERT INTO `dive_fish` (`dive_id`, `fish_id`) VALUES
+(78, 4),
+(79, 4),
+(80, 1),
+(80, 5);
 
 -- --------------------------------------------------------
 

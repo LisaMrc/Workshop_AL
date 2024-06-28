@@ -91,41 +91,36 @@ def get_biggest_fish():
 
 @app.route('/show_dives')
 def show_dives():
-    try:
-        connection, cursor = get_cursor()
-        query = """
-        SELECT 
-            d.id AS dive_id,
-            d.dive_mins, 
-            d.dive_secs, 
-            d.dive_depth, 
-            d.dive_date, 
-            d.rating, 
-            p.country, 
-            p.place_name AS place_name, 
-            p.type AS place_type, 
-            GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
-        FROM 
-            dive d
-        JOIN 
-            place p ON d.place_id = p.place_id
-        LEFT JOIN 
-            dive_fish df ON d.id = df.dive_id
-        LEFT JOIN 
-            fish f ON df.fish_id = f.id
-        GROUP BY 
-            d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
-        ORDER BY 
-            d.dive_date DESC;
-        """
-        cursor.execute(query)
-        user_dives = cursor.fetchall()
-    except Exception as e:
-        logging.error(f"An error occurred: {e}")
-        return "An error occurred while fetching dives", 500
-    finally:
-        cursor.close()
-        connection.close()
+    connection, cursor = get_cursor()
+    query = """
+    SELECT 
+        d.id AS dive_id,
+        d.dive_mins, 
+        d.dive_secs, 
+        d.dive_depth, 
+        d.dive_date, 
+        d.rating, 
+        p.country, 
+        p.place_name AS place_name, 
+        p.type AS place_type, 
+        GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
+    FROM 
+        dive d
+    JOIN 
+        place p ON d.place_id = p.place_id
+    LEFT JOIN 
+        dive_fish df ON d.id = df.dive_id
+    LEFT JOIN 
+        fish f ON df.fish_id = f.id
+    GROUP BY 
+        d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
+    ORDER BY 
+        d.dive_date DESC;
+    """
+    cursor.execute(query)
+    user_dives = cursor.fetchall()
+    cursor.close()
+    connection.close()
 
     places = db.get_places()
     biggest_fish = get_biggest_fish()
@@ -137,66 +132,64 @@ def show_dives():
 
 @app.route('/add', methods=['POST'])
 def add_dive():
-    dive_mins = request.form['dive_mins']
-    dive_secs = request.form['dive_secs']
-    dive_depth = request.form['dive_depth']
-    dive_date = request.form['dive_date']
-    rating = request.form['rating']
-    place = request.form['place']
-    fish = request.form['fish']
+    try:
+        dive_mins = request.form['dive_mins']
+        dive_secs = request.form['dive_secs']
+        dive_depth = request.form['dive_depth']
+        dive_date = request.form['dive_date']
+        rating = request.form['rating']
+        place = request.form['place']
+        fish = request.form.getlist('fish')  # Assuming fish is a list of IDs
 
-    connection, cursor = get_cursor()
+        connection, cursor = get_cursor()
+        sql_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id']))
 
-    # Insert the dive details into the dive table
-    insert_dive_query = """
-    INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id)
-    VALUES (%s, %s, %s, %s, %s, %s)
-    """
-    cursor.execute(insert_dive_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place))
-    dive_id = cursor.lastrowid  # Get the ID of the newly inserted dive
+        dive_id = cursor.lastrowid
 
-    # format_strings = ','.join(['%s'] * len(fish))
-    # cursor.execute(f"SELECT id, common_name FROM fish WHERE id IN ({format_strings})", tuple(fish))
-    # fish = cursor.fetchall()
+        # Insert the fish IDs into the dive_fish table
+        if fish:
+            insert_dive_fish_query = "INSERT INTO dive_fish (dive_id, fish_id) VALUES (%s, %s)"
+            dive_fish_values = [(dive_id, fish_id) for fish_id in fish]
+            cursor.executemany(insert_dive_fish_query, dive_fish_values)
 
-    # Insert the fish IDs into the dive_fish table
-    insert_dive_fish_query = "INSERT INTO dive_fish (dive_id, fish_id) VALUES (%s, %s)"
-    dive_fish_values = [(dive_id, fish_id) for fish_id in fish]
-    cursor.executemany(insert_dive_fish_query, dive_fish_values)
-    connection.commit()
+        connection.commit()
 
-    query = """
-        SELECT 
-            d.id AS dive_id,
-            d.dive_mins, 
-            d.dive_secs, 
-            d.dive_depth, 
-            d.dive_date, 
-            d.rating, 
-            p.country, 
-            p.place_name AS place_name, 
-            p.type AS place_type, 
-            GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
-        FROM 
-            dive d
-        JOIN 
-            place p ON d.place_id = p.place_id
-        LEFT JOIN 
-            dive_fish df ON d.id = df.dive_id
-        LEFT JOIN 
-            fish f ON df.fish_id = f.id
-        GROUP BY 
-            d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
-        ORDER BY 
-            d.dive_date DESC;
-        """
+        query = """
+            SELECT 
+                d.id AS dive_id,
+                d.dive_mins, 
+                d.dive_secs, 
+                d.dive_depth, 
+                d.dive_date, 
+                d.rating, 
+                p.country, 
+                p.place_name AS place_name, 
+                p.type AS place_type, 
+                GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
+            FROM 
+                dive d
+            JOIN 
+                place p ON d.place_id = p.place_id
+            LEFT JOIN 
+                dive_fish df ON d.id = df.dive_id
+            LEFT JOIN 
+                fish f ON df.fish_id = f.id
+            GROUP BY 
+                d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
+            ORDER BY 
+                d.dive_date DESC;
+            """
+        cursor.execute(query)
+        result = cursor.fetchall()
+        
+    except Exception as e:
+        connection.rollback()
+        print(f"Error: {e}")
+    finally:
+        cursor.close()
+        connection.close()
 
-    cursor.execute(query)
-
-    dives = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
     return redirect("/show_dives")
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
