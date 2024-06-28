@@ -39,6 +39,7 @@
                                     <th>Country</th>
                                     <th>Place Name</th>
                                     <th>Environnement</th>
+                                    <th>Fishes seen</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,7 +53,7 @@
                                                 <td class="my_td">{{user_dive}} m</td>
                                             {% elif loop.index0 == 5 %}
                                                 <td class="my_td">{{user_dive}}/5</td>
-                                            {% elif loop.index0 != 0 and loop.index0 != 2 and loop.index0 != 6 and loop.index0 != 7 and loop.index0 != 8 and loop.index0 != 9 %}
+                                            {% elif loop.index0 != 0 and loop.index0 != 2 %}
                                                 <td class="my_td">{{user_dive}}</td>
                                             {% endif %}
                                         {% endfor %}
@@ -144,7 +145,7 @@
                     const row = document.createElement('div');
                     row.innerHTML = `
                     <label for="${fish.common_name}">${fish.common_name}</label>
-                    <input type="checkbox" id="${fish.id}" name="${fish.common_name}" value="${fish.common_name}">
+                    <input type="checkbox" id="${fish.id}" name="fish" value="${fish.id}">
                     `;
                     fishDiv.appendChild(row);
                 });
