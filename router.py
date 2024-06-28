@@ -84,7 +84,7 @@ def add_user():
 
 def get_biggest_fish():
     connection, cursor = get_cursor()
-    cursor.execute("SELECT fish.common_name, fish.average_size FROM fish JOIN dive ON dive.fish_id = fish.id WHERE dive.diver_id = %s AND fish.average_size  = (SELECT MAX(fish.average_size) FROM fish JOIN dive ON dive.fish_id = fish.id WHERE dive.diver_id = %s)", (session['id'], session['id']))
+    cursor.execute("SELECT fish.common_name, fish.average_size FROM fish JOIN dive_fish ON dive_fish.fish_id = fish.id WHERE dive_fish.diver_id = %s AND fish.average_size  = (SELECT MAX(fish.average_size) FROM fish JOIN dive ON dive_fish.fish_id = fish.id WHERE dive_fish.diver_id = %s)", (session['id'], session['id']))
     biggest_fish = cursor.fetchone()
     connection.close()
     return biggest_fish
@@ -139,18 +139,21 @@ def add_dive():
         dive_date = request.form['dive_date']
         rating = request.form['rating']
         place = request.form['place']
-        fish = request.form.getlist('fish')  # Assuming fish is a list of IDs
+        fish = request.form.getlist('fish')  # List of fish IDs
 
         connection, cursor = get_cursor()
-        sql_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        sql_query = """
+            INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
         cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id']))
 
-        dive_id = cursor.lastrowid
+        dive_id = cursor.lastrowid  # Get the ID of the newly inserted dive
 
-        # Insert the fish IDs into the dive_fish table
+        # Insert the fish IDs and diver_id into the dive_fish table
         if fish:
-            insert_dive_fish_query = "INSERT INTO dive_fish (dive_id, fish_id) VALUES (%s, %s)"
-            dive_fish_values = [(dive_id, fish_id) for fish_id in fish]
+            insert_dive_fish_query = "INSERT INTO dive_fish (dive_id, fish_id, diver_id) VALUES (%s, %s, %s)"
+            dive_fish_values = [(dive_id, fish_id, session['id']) for fish_id in fish]
             cursor.executemany(insert_dive_fish_query, dive_fish_values)
 
         connection.commit()
@@ -181,8 +184,7 @@ def add_dive():
                 d.dive_date DESC;
             """
         cursor.execute(query)
-        result = cursor.fetchall()
-        
+
     except Exception as e:
         connection.rollback()
         print(f"Error: {e}")
@@ -197,6 +199,10 @@ def delete_dive(index):
     connection, cursor = get_cursor()
     sql_query = "DELETE FROM dive WHERE id = %s"
     cursor.execute(sql_query, (index,))
+
+    sql_query_two = "DELETE FROM dive_fish WHERE dive_id = %s"
+    cursor.execute(sql_query_two, (index,))
+
     connection.commit()
     cursor.close()
     connection.close()
