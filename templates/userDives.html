@@ -76,30 +76,36 @@
                     
                     <div class="col-lg-5 d-flex flex-column mb-4">
                         <h2 class="mb-5">New Dive</h2>
-                        <form action="/add" method="POST">
-                            <br><label for="dive_mins">Number of minutes you dived :</label>
-                            <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5">
-                        
-                            <br><label for="dive_secs">Number of seconds you dived :</label>
-                            <br><input type='number' name="dive_secs" id='dive_secs' class="mb-5">
-                        
-                            <br><label for="dive_depth">Your dive depth :</label>
-                            <br><input type='number' name="dive_depth" id='dive_depth' class="mb-5">
-                        
-                            <br><label for="dive_date">Your dive date :</label>
-                            <br><input type='date' name="dive_date" id='dive_date' class="mb-5">
-                        
-                            <br><label for="rating">Your rating :</label>
-                            <br><input type='number' name="rating" id='rating' class="mb-5">
-                        
-                            <br><label for="place">Where you dived :</label>
-                            <br><select name="place" class="mb-5">
-                                {% for place in places %}
-                                    <option value="{{ place[0] }}">{{ place[1] }}</option>
-                                {% endfor %}
-                            </select>
-                        
-                            <br><input class="btn btn-primary" type="submit" value="Ajouter">
+                        <form class="userDivesFishForm" action="/add" method="POST">
+                            <div>
+                                <br><label for="dive_mins">Number of minutes you dived :</label>
+                                <br><input type='number' name="dive_mins" id='dive_mins' class="mb-5">
+                            
+                                <br><label for="dive_secs">Number of seconds you dived :</label>
+                                <br><input type='number' name="dive_secs" id='dive_secs' class="mb-5">
+                            
+                                <br><label for="dive_depth">Your dive depth :</label>
+                                <br><input type='number' name="dive_depth" id='dive_depth' class="mb-5">
+                            
+                                <br><label for="dive_date">Your dive date :</label>
+                                <br><input type='date' name="dive_date" id='dive_date' class="mb-5">
+                            
+                                <br><label for="rating">Your rating :</label>
+                                <br><input type='number' name="rating" id='rating' class="mb-5">
+                            
+                                <br><label for="place">Where you dived :</label>
+                                <br><select name="place" class="mb-5">
+                                    {% for place in places %}
+                                        <option value="{{ place[0] }}">{{ place[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            
+                                <br><input class="btn btn-primary" type="submit" value="Ajouter">
+                            </div>
+                            <div class="fishCheckboxes">
+                                <p>Fishes you saw :</p>
+                                <!-- Fish data -->
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -127,5 +133,23 @@
                 <a class="btn btn-xl btn-light me-4" href="/fishes">See all fishes</a>
             </div>
         </section>
+        <script>
+            let fishCounter = 1;
+    
+            fetch('/api/fishes')
+            .then(response => response.json())
+            .then(data => {
+                const fishDiv = document.querySelector('.fishCheckboxes');
+                data.forEach(fish => {
+                    const row = document.createElement('div');
+                    row.innerHTML = `
+                    <label for="${fish.common_name}">${fish.common_name}</label>
+                    <input type="checkbox" id="${fish.id}" name="${fish.common_name}" value="${fish.common_name}">
+                    `;
+                    fishDiv.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        </script>
     </body>
 </html>
