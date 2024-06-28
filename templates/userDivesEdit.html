@@ -38,12 +38,34 @@
                                 {% endfor %}
                             </select>
 
+                            <div class="fishCheckboxes">
+                                <p>Fishes you saw :</p>
+                                <!-- Fish data -->
+                            </div>
+
                             <br><input class="btn btn-success" type="submit" value="Validate Edit">
                         </form>
                     </div>
-
                 </div>
             </div>
         </section>
+        <script>
+            let fishCounter = 1;
+    
+            fetch('/api/fishes')
+            .then(response => response.json())
+            .then(data => {
+                const fishDiv = document.querySelector('.fishCheckboxes');
+                data.forEach(fish => {
+                    const row = document.createElement('div');
+                    row.innerHTML = `
+                    <label for="${fish.common_name}">${fish.common_name}</label>
+                    <input type="checkbox" id="${fish.id}" name="fish" value="${fish.id}">
+                    `;
+                    fishDiv.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        </script>
     </body>
 </html>

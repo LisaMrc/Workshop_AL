@@ -84,7 +84,7 @@ def add_user():
 
 def get_biggest_fish():
     connection, cursor = get_cursor()
-    cursor.execute("SELECT fish.common_name, fish.average_size FROM dive JOIN fish ON dive.fish_id = fish.id WHERE dive.diver_id = %s ORDER BY fish.average_size DESC LIMIT 1", (session['id'],))
+    cursor.execute("SELECT fish.common_name, fish.average_size FROM fish JOIN dive ON dive.fish_id = fish.id WHERE dive.diver_id = %s AND fish.average_size  = (SELECT MAX(fish.average_size) FROM fish JOIN dive ON dive.fish_id = fish.id WHERE dive.diver_id = %s)", (session['id'], session['id']))
     biggest_fish = cursor.fetchone()
     connection.close()
     return biggest_fish
@@ -118,26 +118,15 @@ def add_dive():
     dive_date = request.form['dive_date']
     rating = request.form['rating']
     place = request.form['place']
-    fish = request.form.getlist('fish')
-    fish = [int(id) for id in fish if id.isdigit()]
+    fish = request.form['fish']
 
     connection, cursor = get_cursor()
-
-    fishes = []
-    if fish:
-        format_strings = ','.join(['%s'] * len(fish))
-        cursor.execute(f"SELECT id, common_name FROM fish WHERE id IN ({format_strings})", tuple(fish))
-        fishes = cursor.fetchall()
-
-        insert_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id, fish_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        insert_values = [(dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id'], fish_id) for fish_id in fish]
-        cursor.executemany(insert_query, insert_values)
-        connection.commit()
-
+    sql_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id, fish_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id'], fish))
+    connection.commit()
     cursor.close()
     connection.close()
-
-    return f'Selected fishes: {fishes}'
+    return redirect("/show_dives")
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
 def delete_dive(index):
@@ -168,10 +157,11 @@ def edit_dive(index):
     dive_date = request.form['dive_date']
     rating = request.form['rating']
     place = request.form['place']
+    fish = request.form['fish']
 
     connection, cursor = get_cursor()
-    sql_query = "UPDATE dive SET dive_mins = %s, dive_secs = %s, dive_depth = %s, dive_date = %s, rating = %s, place_id=%s WHERE id = %s"
-    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, index))
+    sql_query = "UPDATE dive SET dive_mins = %s, dive_secs = %s, dive_depth = %s, dive_date = %s, rating = %s, place_id=%s, fish_id=%s WHERE id = %s"
+    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, fish, index))
     connection.commit()
     cursor.close()
     connection.close()
