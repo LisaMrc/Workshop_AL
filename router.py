@@ -49,7 +49,6 @@ def render_signin():
 def add_user():
     username = request.form['username']
     password = request.form['password']
-    # Does the user exists ?
     connection, cursor = get_cursor()
     sql_query = "SELECT username FROM diver WHERE username = %s"
     cursor.execute(sql_query, (username,))
@@ -141,56 +140,52 @@ def add_dive():
     fish = request.form.getlist('fish')
     fish = [int(id) for id in fish if id.isdigit()]  # Convert IDs to integers and filter out non-digits
 
-        connection, cursor = get_cursor()
-        sql_query = """
-            INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+    connection, cursor = get_cursor()
+    sql_query = """
+        INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id']))
+
+    dive_id = cursor.lastrowid  # Get the ID of the newly inserted dive
+
+    # Insert the fish IDs and diver_id into the dive_fish table
+    if fish:
+        insert_dive_fish_query = "INSERT INTO dive_fish (dive_id, fish_id, diver_id) VALUES (%s, %s, %s)"
+        dive_fish_values = [(dive_id, fish_id, session['id']) for fish_id in fish]
+        cursor.executemany(insert_dive_fish_query, dive_fish_values)
+
+    connection.commit()
+
+    query = """
+        SELECT 
+            d.id AS dive_id,
+            d.dive_mins, 
+            d.dive_secs, 
+            d.dive_depth, 
+            d.dive_date, 
+            d.rating, 
+            p.country, 
+            p.place_name AS place_name, 
+            p.type AS place_type, 
+            GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
+        FROM 
+            dive d
+        JOIN 
+            place p ON d.place_id = p.place_id
+        LEFT JOIN 
+            dive_fish df ON d.id = df.dive_id
+        LEFT JOIN 
+            fish f ON df.fish_id = f.id
+        GROUP BY 
+            d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
+        ORDER BY 
+            d.dive_date DESC;
         """
-        cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id']))
-
-        dive_id = cursor.lastrowid  # Get the ID of the newly inserted dive
-
-        # Insert the fish IDs and diver_id into the dive_fish table
-        if fish:
-            insert_dive_fish_query = "INSERT INTO dive_fish (dive_id, fish_id, diver_id) VALUES (%s, %s, %s)"
-            dive_fish_values = [(dive_id, fish_id, session['id']) for fish_id in fish]
-            cursor.executemany(insert_dive_fish_query, dive_fish_values)
-
-        connection.commit()
-
-        query = """
-            SELECT 
-                d.id AS dive_id,
-                d.dive_mins, 
-                d.dive_secs, 
-                d.dive_depth, 
-                d.dive_date, 
-                d.rating, 
-                p.country, 
-                p.place_name AS place_name, 
-                p.type AS place_type, 
-                GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
-            FROM 
-                dive d
-            JOIN 
-                place p ON d.place_id = p.place_id
-            LEFT JOIN 
-                dive_fish df ON d.id = df.dive_id
-            LEFT JOIN 
-                fish f ON df.fish_id = f.id
-            GROUP BY 
-                d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
-            ORDER BY 
-                d.dive_date DESC;
-            """
-        cursor.execute(query)
-
     cursor.execute(query)
     cursor.fetchall()
-
     cursor.close()
     connection.close()
-
     return redirect(url_for('show_dives'))
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
@@ -238,7 +233,7 @@ def edit_dive(index):
 
     # Insert new dive_fish entries for selected fish IDs
     for fish_id in selected_fish_ids:
-        cursor.execute("INSERT INTO dive_fish (dive_id, fish_id) VALUES (%s, %s)", (index, fish_id))
+        cursor.execute("INSERT INTO dive_fish (dive_id, fish_id, diver_id) VALUES (%s, %s, %s)", (index, fish_id, session['id']))
 
     connection.commit()
 
