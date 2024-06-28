@@ -82,6 +82,13 @@ def add_user():
         else:
             return "Error creating user", 500
 
+def get_biggest_fish():
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT fish.common_name, fish.average_size FROM fish JOIN dive ON dive.fish_id = fish.id WHERE dive.diver_id = %s AND fish.average_size  = (SELECT MAX(fish.average_size) FROM fish JOIN dive ON dive.fish_id = fish.id WHERE dive.diver_id = %s)", (session['id'], session['id']))
+    biggest_fish = cursor.fetchone()
+    connection.close()
+    return biggest_fish
+
 @app.route('/show_dives')
 def show_dives():
     try:
@@ -121,11 +128,12 @@ def show_dives():
         connection.close()
 
     places = db.get_places()
-    average_depth = sum(dive[3] for dive in user_dives) / len(user_dives) if user_dives else 0
+    biggest_fish = get_biggest_fish()
     average_mins = sum(dive[1] for dive in user_dives) / len(user_dives) if user_dives else 0
     average_secs = sum(dive[2] for dive in user_dives) / len(user_dives) if user_dives else 0
+    average_depth = sum(dive[3] for dive in user_dives) / len(user_dives) if user_dives else 0
 
-    return render_template('userDives.html', user_dives=user_dives, places=places, avg_depth=average_depth, avg_mins=average_mins, average_secs=average_secs)
+    return render_template('userDives.html', user_dives=user_dives, places=places, avg_depth=average_depth, avg_mins=average_mins, avg_secs=average_secs, biggest_fish=biggest_fish)
 
 @app.route('/add', methods=['POST'])
 def add_dive():
@@ -135,8 +143,7 @@ def add_dive():
     dive_date = request.form['dive_date']
     rating = request.form['rating']
     place = request.form['place']
-    fish = request.form.getlist('fish')
-    fish = [int(id) for id in fish if id.isdigit()]
+    fish = request.form['fish']
 
     connection, cursor = get_cursor()
 
@@ -190,10 +197,7 @@ def add_dive():
 
     cursor.close()
     connection.close()
-    
-    places = db.get_places()
-    return render_template('userDives.html', user_dives=dives, places=places)
-    # return f'Selected fishes: {fishes}'
+    return redirect("/show_dives")
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
 def delete_dive(index):
@@ -216,7 +220,6 @@ def render_edit(index):
     places = db.get_places()
     return render_template('userDivesEdit.html', entry=row, places=places)
 
-# TODO: edit edit route to change place
 @app.route("/edit_dive/<int:index>", methods=['GET', 'POST'])
 def edit_dive(index):
     dive_mins = request.form['dive_mins']
@@ -225,10 +228,11 @@ def edit_dive(index):
     dive_date = request.form['dive_date']
     rating = request.form['rating']
     place = request.form['place']
+    fish = request.form['fish']
 
     connection, cursor = get_cursor()
-    sql_query = "UPDATE dive SET dive_mins = %s, dive_secs = %s, dive_depth = %s, dive_date = %s, rating = %s, place_id=%s WHERE id = %s"
-    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, index))
+    sql_query = "UPDATE dive SET dive_mins = %s, dive_secs = %s, dive_depth = %s, dive_date = %s, rating = %s, place_id=%s, fish_id=%s WHERE id = %s"
+    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, fish, index))
     connection.commit()
     cursor.close()
     connection.close()

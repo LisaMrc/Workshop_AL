@@ -16,14 +16,6 @@ def get_cursor():
 def get_mysql_connector_version():
     return mysql.connector.__version__
 
-def get_dives_data():
-    connection, cursor = get_cursor()
-    cursor.execute("SELECT * FROM Dive ORDER BY id")
-    rows = cursor.fetchall()
-    cursor.close()
-    connection.close()
-    return rows
-
 def get_places():
     connection, cursor = get_cursor()
     cursor.execute("SELECT place_id, place_name FROM place")
