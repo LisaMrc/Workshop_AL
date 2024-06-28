@@ -1,4 +1,9 @@
-- log in account not there : message no account
-- sign in there : username already used
-- log in pwd incorrect : message pwd incorrect
+Lisa :
+
 - edit page : add fishes
+- finish statistics
+
+Anass :
+
+- select multiple fishes
+- css

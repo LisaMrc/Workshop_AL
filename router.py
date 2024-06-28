@@ -110,16 +110,26 @@ def add_dive():
     dive_date = request.form['dive_date']
     rating = request.form['rating']
     place = request.form['place']
-    fish = request.form['fish']
+    fish = request.form.getlist('fish')
+    fish = [int(id) for id in fish if id.isdigit()]
 
     connection, cursor = get_cursor()
-    sql_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id, fish_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id'], fish))
-    connection.commit()
+
+    fishes = []
+    if fish:
+        format_strings = ','.join(['%s'] * len(fish))
+        cursor.execute(f"SELECT id, common_name FROM fish WHERE id IN ({format_strings})", tuple(fish))
+        fishes = cursor.fetchall()
+
+        insert_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id, fish_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        insert_values = [(dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id'], fish_id) for fish_id in fish]
+        cursor.executemany(insert_query, insert_values)
+        connection.commit()
+
     cursor.close()
     connection.close()
 
-    return redirect("/show_dives")
+    return f'Selected fishes: {fishes}'
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
 def delete_dive(index):
