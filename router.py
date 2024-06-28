@@ -120,13 +120,11 @@ def show_dives():
     user_dives = cursor.fetchall()
     cursor.close()
     connection.close()
-
     places = db.get_places()
     biggest_fish = get_biggest_fish()
     average_mins = sum(dive[1] for dive in user_dives) / len(user_dives) if user_dives else 0
     average_secs = sum(dive[2] for dive in user_dives) / len(user_dives) if user_dives else 0
     average_depth = sum(dive[3] for dive in user_dives) / len(user_dives) if user_dives else 0
-
     return render_template('userDives.html', user_dives=user_dives, places=places, avg_depth=average_depth, avg_mins=average_mins, avg_secs=average_secs, biggest_fish=biggest_fish)
 
 @app.route('/add', methods=['POST'])
@@ -193,10 +191,8 @@ def delete_dive(index):
     connection, cursor = get_cursor()
     sql_query = "DELETE FROM dive WHERE id = %s"
     cursor.execute(sql_query, (index,))
-
     sql_query_two = "DELETE FROM dive_fish WHERE dive_id = %s"
     cursor.execute(sql_query_two, (index,))
-
     connection.commit()
     cursor.close()
     connection.close()
@@ -236,7 +232,6 @@ def edit_dive(index):
         cursor.execute("INSERT INTO dive_fish (dive_id, fish_id, diver_id) VALUES (%s, %s, %s)", (index, fish_id, session['id']))
 
     connection.commit()
-
     sql_query = "UPDATE dive SET dive_mins = %s, dive_secs = %s, dive_depth = %s, dive_date = %s, rating = %s, place_id=%s, fish_id=%s WHERE id = %s"
     cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, fish, index))
     connection.commit()
