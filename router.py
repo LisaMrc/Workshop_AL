@@ -111,12 +111,14 @@ def show_dives():
         dive_fish df ON d.id = df.dive_id
     LEFT JOIN 
         fish f ON df.fish_id = f.id
+    WHERE
+        d.diver_id = %s
     GROUP BY 
         d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
     ORDER BY 
         d.dive_date DESC;
     """
-    cursor.execute(query)
+    cursor.execute(query, (session['id'],))
     user_dives = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -180,7 +182,7 @@ def add_dive():
         ORDER BY 
             d.dive_date DESC;
         """
-    cursor.execute(query)
+    cursor.execute(query,)
     cursor.fetchall()
     cursor.close()
     connection.close()
