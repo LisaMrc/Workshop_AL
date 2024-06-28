@@ -82,6 +82,13 @@ def add_user():
         else:
             return "Error creating user", 500
 
+def get_biggest_fish():
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT fish.common_name, fish.average_size FROM dive JOIN fish ON dive.fish_id = fish.id WHERE dive.diver_id = %s ORDER BY fish.average_size DESC LIMIT 1", (session['id'],))
+    biggest_fish = cursor.fetchone()
+    connection.close()
+    return biggest_fish
+
 @app.route('/show_dives')
 def show_dives():
     try:
@@ -96,11 +103,12 @@ def show_dives():
         connection.close()
 
     places = db.get_places()
+    biggest_fish = get_biggest_fish()
     average_mins = sum(dive[1] for dive in user_dives) / len(user_dives) if user_dives else 0
     average_secs = sum(dive[2] for dive in user_dives) / len(user_dives) if user_dives else 0
     average_depth = sum(dive[3] for dive in user_dives) / len(user_dives) if user_dives else 0
 
-    return render_template('userDives.html', user_dives=user_dives, places=places, avg_depth=average_depth, avg_mins=average_mins, avg_secs=average_secs)
+    return render_template('userDives.html', user_dives=user_dives, places=places, avg_depth=average_depth, avg_mins=average_mins, avg_secs=average_secs, biggest_fish=biggest_fish)
 
 @app.route('/add', methods=['POST'])
 def add_dive():
