@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask,request, render_template, jsonify, redirect, session
+from flask import Flask,request, render_template, jsonify, redirect, url_for, session
 from flask_cors import CORS
 from flask_session import Session
 from db import get_mysql_connector_version, get_cursor
@@ -143,7 +143,8 @@ def add_dive():
     dive_date = request.form['dive_date']
     rating = request.form['rating']
     place = request.form['place']
-    fish = request.form['fish']
+    fish = request.form.getlist('fish')
+    fish = [int(id) for id in fish if id.isdigit()]  # Convert IDs to integers and filter out non-digits
 
     connection, cursor = get_cursor()
 
@@ -192,12 +193,12 @@ def add_dive():
         """
 
     cursor.execute(query)
-
-    dives = cursor.fetchall()
+    cursor.fetchall()
 
     cursor.close()
     connection.close()
-    return redirect("/show_dives")
+
+    return redirect(url_for('show_dives'))
 
 @app.route('/delete_dive/<int:index>', methods=['GET', 'POST'])
 def delete_dive(index):
@@ -231,12 +232,25 @@ def edit_dive(index):
     fish = request.form['fish']
 
     connection, cursor = get_cursor()
+
+    # Get selected fish IDs from form
+    selected_fish_ids = request.form.getlist('fish')
+
+    # Delete existing dive_fish entries for this dive
+    cursor.execute("DELETE FROM dive_fish WHERE dive_id = %s", (index,))
+
+    # Insert new dive_fish entries for selected fish IDs
+    for fish_id in selected_fish_ids:
+        cursor.execute("INSERT INTO dive_fish (dive_id, fish_id) VALUES (%s, %s)", (index, fish_id))
+
+    connection.commit()
+
     sql_query = "UPDATE dive SET dive_mins = %s, dive_secs = %s, dive_depth = %s, dive_date = %s, rating = %s, place_id=%s, fish_id=%s WHERE id = %s"
     cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, fish, index))
     connection.commit()
     cursor.close()
     connection.close()
-    return redirect("/show_dives", code=302)
+    return redirect(url_for('show_dives'))
 
 @app.route('/fishes')
 def show_fishes():
