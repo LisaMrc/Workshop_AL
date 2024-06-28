@@ -7,20 +7,26 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
-        <!-- Problème de champs : à côté au lieu de en-dessous -->
-        <section class="content-section" id="portfolio">
+        <section class="content-section">
             <div class="container px-4 px-lg-5">
                 <div class="content-section-heading text-center">
                     <h2 class="mb-5">Welcome back!</h2>
-                    <h3 class="text-secondary mb-0">Log into your account</h3>
+                    <h3 class="text-secondary mb-5">Log into your account</h3>
                 </div>
-                <div class="row gx-0">
+                <div class="row justify-content-center">
                     <div class="col-lg-6">
-                        <form action="/login_user" method="post">
-                            <input type="text" name="username" placeholder="Username" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <input type="submit" value="Login">
+                        <form action="/login_user" method="post" class="text-center">
+                            <div class="form-group mb-2">
+                                <input type="text" class="form-control" name="username" placeholder="Username" required>
+                            </div>
+                            <div class="form-group mb-5">
+                                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                            </div>
+                            <button type="submit" class="btn btn-xl me-4 btn-primary mb-5">Login</button>
                         </form>
+
+                        <h3 class="text-secondary mb-5 text-center">Wrong page ? You can also</h3>
+                        <a class="btn btn-xl btn-outline-dark me-4 text-center" href="/render_login">Create an account</a>
                     </div>
                 </div>
             </div>
