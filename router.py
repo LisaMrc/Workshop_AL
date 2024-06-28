@@ -93,7 +93,32 @@ def get_biggest_fish():
 def show_dives():
     try:
         connection, cursor = get_cursor()
-        cursor.execute("SELECT dive.id, dive.dive_mins, dive.dive_secs, dive.dive_depth, dive.dive_date, dive.rating, place.country, place.place_name, place.type, fish.common_name FROM dive JOIN place ON dive.place_id = place.place_id JOIN fish ON dive.fish_id = fish.id WHERE dive.diver_id = %s", (session['id'],))
+        query = """
+        SELECT 
+            d.id AS dive_id,
+            d.dive_mins, 
+            d.dive_secs, 
+            d.dive_depth, 
+            d.dive_date, 
+            d.rating, 
+            p.country, 
+            p.place_name AS place_name, 
+            p.type AS place_type, 
+            GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
+        FROM 
+            dive d
+        JOIN 
+            place p ON d.place_id = p.place_id
+        LEFT JOIN 
+            dive_fish df ON d.id = df.dive_id
+        LEFT JOIN 
+            fish f ON df.fish_id = f.id
+        GROUP BY 
+            d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
+        ORDER BY 
+            d.dive_date DESC;
+        """
+        cursor.execute(query)
         user_dives = cursor.fetchall()
     except Exception as e:
         logging.error(f"An error occurred: {e}")
@@ -121,9 +146,55 @@ def add_dive():
     fish = request.form['fish']
 
     connection, cursor = get_cursor()
-    sql_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id, fish_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id'], fish))
+
+    # Insert the dive details into the dive table
+    insert_dive_query = """
+    INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(insert_dive_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place))
+    dive_id = cursor.lastrowid  # Get the ID of the newly inserted dive
+
+    # format_strings = ','.join(['%s'] * len(fish))
+    # cursor.execute(f"SELECT id, common_name FROM fish WHERE id IN ({format_strings})", tuple(fish))
+    # fish = cursor.fetchall()
+
+    # Insert the fish IDs into the dive_fish table
+    insert_dive_fish_query = "INSERT INTO dive_fish (dive_id, fish_id) VALUES (%s, %s)"
+    dive_fish_values = [(dive_id, fish_id) for fish_id in fish]
+    cursor.executemany(insert_dive_fish_query, dive_fish_values)
     connection.commit()
+
+    query = """
+        SELECT 
+            d.id AS dive_id,
+            d.dive_mins, 
+            d.dive_secs, 
+            d.dive_depth, 
+            d.dive_date, 
+            d.rating, 
+            p.country, 
+            p.place_name AS place_name, 
+            p.type AS place_type, 
+            GROUP_CONCAT(f.common_name SEPARATOR ', ') AS fishes_seen
+        FROM 
+            dive d
+        JOIN 
+            place p ON d.place_id = p.place_id
+        LEFT JOIN 
+            dive_fish df ON d.id = df.dive_id
+        LEFT JOIN 
+            fish f ON df.fish_id = f.id
+        GROUP BY 
+            d.id, d.dive_mins, d.dive_secs, d.dive_depth, d.dive_date, d.rating, p.country, p.place_name, p.type
+        ORDER BY 
+            d.dive_date DESC;
+        """
+
+    cursor.execute(query)
+
+    dives = cursor.fetchall()
+
     cursor.close()
     connection.close()
     return redirect("/show_dives")
