@@ -30,3 +30,10 @@ def get_places():
     places = cursor.fetchall()
     connection.close()
     return places
+
+def get_fishes():
+    connection, cursor = get_cursor()
+    cursor.execute("SELECT id, common_name FROM fish")
+    fishes = cursor.fetchall()
+    connection.close()
+    return fishes

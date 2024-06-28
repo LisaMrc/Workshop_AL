@@ -86,7 +86,7 @@ def add_user():
 def show_dives():
     try:
         connection, cursor = get_cursor()
-        cursor.execute("SELECT * FROM dive JOIN place ON dive.place_id = place.place_id WHERE diver_id = %s", (session['id'],))
+        cursor.execute("SELECT dive.id, dive.dive_mins, dive.dive_secs, dive.dive_depth, dive.dive_date, dive.rating, place.country, place.place_name, place.type, fish.common_name FROM dive JOIN place ON dive.place_id = place.place_id JOIN fish ON dive.fish_id = fish.id WHERE dive.diver_id = %s", (session['id'],))
         user_dives = cursor.fetchall()
     except Exception as e:
         logging.error(f"An error occurred: {e}")
@@ -110,10 +110,11 @@ def add_dive():
     dive_date = request.form['dive_date']
     rating = request.form['rating']
     place = request.form['place']
+    fish = request.form['fish']
 
     connection, cursor = get_cursor()
-    sql_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id']))
+    sql_query = "INSERT INTO dive (dive_mins, dive_secs, dive_depth, dive_date, rating, place_id, diver_id, fish_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(sql_query, (dive_mins, dive_secs, dive_depth, dive_date, rating, place, session['id'], fish))
     connection.commit()
     cursor.close()
     connection.close()
